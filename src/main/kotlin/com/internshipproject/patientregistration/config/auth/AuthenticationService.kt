@@ -10,6 +10,7 @@ import com.internshipproject.patientregistration.entity.user.UserRepository
 import com.internshipproject.patientregistration.entity.user.types.Doctor
 import com.internshipproject.patientregistration.entity.user.types.DoctorRepository
 import com.internshipproject.patientregistration.entity.user.types.Patient
+import com.internshipproject.patientregistration.service.RoleService
 import lombok.RequiredArgsConstructor
 import mu.KLogging
 import org.springframework.dao.DataIntegrityViolationException
@@ -24,7 +25,7 @@ import org.springframework.stereotype.Service
 @RequiredArgsConstructor
 class AuthenticationService(
     private val repository: UserRepository,
-    private val roleRepository: RoleRepository,
+    private val roleService: RoleService,
     private val passwordEncoder: PasswordEncoder,
     private val jwtService: JwtService,
     private val authenticationManager: AuthenticationManager
@@ -34,13 +35,15 @@ class AuthenticationService(
 
 
     fun register(request: RegisterRequest): AuthenticationResponse {
-        val doctorRole = Role()
-        doctorRole.name = "Doctor"
 
-        val patientRole = Role.builder().name("Patient").build()
+        if (repository.existsByEmail(request.email))
+        // Handle the case when the email is already registered
+            throw YourCustomEmailAlreadyExistsException("This email is already registered.",HttpStatus.CONFLICT)
 
+        //val doctorRole = Role()
+        //doctorRole.name = "Doctor"
 
-        roleRepository.save(patientRole)
+        val patientRole = roleService.addRole("Patient")
         logger.info ("Yasin: ${request.firstname}")
 /*        val user : User = Doctor.builder()
             .firstName(request.firstname)
@@ -63,9 +66,7 @@ class AuthenticationService(
 
 
 
-        if (repository.existsByEmail(request.email))
-        // Handle the case when the email is already registered
-            throw YourCustomEmailAlreadyExistsException("This email is already registered.",HttpStatus.CONFLICT)
+
         // Alternatively, you can return an error response to the user
         // and skip throwing an exception, based on your application's requirements.
 
@@ -81,26 +82,35 @@ class AuthenticationService(
         return AuthenticationResponse
             .builder()
             .token(jwtToken)
+            .id(user.id)
             .build()
 
     }
 
     fun authenticate(request: AuthenticationRequest): AuthenticationResponse {
-        authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(
-                request.email,
-                request.password
+        val user = repository.findByEmail(request.email).orElseThrow{YourCustomEmailAlreadyExistsException("Wrong or missing credentials",HttpStatus.BAD_REQUEST)}
+
+        try {
+            authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken(
+                    request.email,
+                    request.password
+                )
             )
-        )
-        val user = repository.findByEmail(request.email).orElseThrow()
+        }catch (_: Exception){
+            throw YourCustomEmailAlreadyExistsException("Wrong or missing credentials",HttpStatus.BAD_REQUEST)
+        }
+
+
         val roleMap : Map<String,Any> = mapOf(
             "role" to  user.roles
         )
-        val jwtToken = jwtService.generateToken(user)
+        val jwtToken = jwtService.generateToken(userDetails = user, extraClaims =  roleMap)
 
         return AuthenticationResponse
             .builder()
             .token(jwtToken)
+            .id(user.id)
             .build()
     }
 

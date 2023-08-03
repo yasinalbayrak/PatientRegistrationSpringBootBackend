@@ -1,4 +1,5 @@
 package com.internshipproject.patientregistration.entity.user.types
+import com.internshipproject.patientregistration.entity.user.Gender
 import com.internshipproject.patientregistration.entity.user.Role
 import com.internshipproject.patientregistration.entity.user.User
 import jakarta.persistence.*
@@ -22,6 +23,8 @@ class Patient(
         private var lastName: String = "",
         private var email: String = "",
         private var passw: String = "",
+        private var gender: Gender = Gender.MALE,
+        private var age: Int = 0,
         private var roles: Set<Role> = emptySet(),
 
         ) {
@@ -31,7 +34,8 @@ class Patient(
         fun email(email: String) = apply { this.email = email }
         fun passw(passw: String) = apply { this.passw = passw }
         fun roles(roles: Set<Role>) = apply { this.roles = roles }
-
+        fun gender(gender: Gender) = apply { this.gender = gender }
+        fun age(age: Int) = apply { this.age = age }
 
         fun build() : Patient {
             val newPatient = Patient()
@@ -40,6 +44,8 @@ class Patient(
             newPatient.email = email
             newPatient.passw = passw
             newPatient.roles = roles
+            newPatient.age= age
+            newPatient.gender = gender
             return newPatient
         }
     }

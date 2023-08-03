@@ -19,6 +19,12 @@ abstract class User(
     open var lastName: String = "",
     @Column(unique = true)
     open var email: String = "",
+
+    @Enumerated(EnumType.STRING)
+    open var gender: Gender = Gender.MALE,
+
+    open var age:Int = 0,
+
     open var passw: String = "",
 
 

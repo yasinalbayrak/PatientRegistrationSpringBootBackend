@@ -44,6 +44,8 @@ class UserService (
                 .lastName(it.user.lastname)
                 .email(it.user.email)
                 .passw(passwordEncoder.encode(it.user.passw))
+                .age(it.user.age)
+                .gender(it.user.gender)
                 .roles(setOf(role))
                 .build()
         }
@@ -52,7 +54,7 @@ class UserService (
 
         var result = doctorEntity.let {
             DoctorDTO(
-                user = UserDTO(it.id,it.firstName,it.lastName,it.email,it.passw,"Doctor"),
+                user = UserDTO(it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Doctor"),
                 salary = it.salary,
                 specialization = it.specialization
             )
@@ -65,7 +67,7 @@ class UserService (
         return doctorRepository.findAll().map {
             DoctorDTO(
                 UserDTO(
-                    it.id,it.firstName,it.lastName,it.email,it.passw,"Doctor"
+                    it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Doctor"
                 ),
                 it.specialization,
                 it.salary
@@ -81,7 +83,7 @@ class UserService (
 
                 return DoctorDTO(
                     UserDTO(
-                        doctor.id, doctor.firstName, doctor.lastName, doctor.email, doctor.passw, "Doctor"
+                        doctor.id, doctor.firstName, doctor.lastName, doctor.email, doctor.passw,doctor.gender,doctor.age, "Doctor"
                     ),
                     doctor.specialization,
                     doctor.salary
@@ -121,7 +123,7 @@ class UserService (
                     it.specialization= doctorInput.specialization
                     doctorRepository.save(it)
                     DoctorDTO(
-                        user= UserDTO(it.id,it.firstName,it.lastName,it.email,it.passw,"Doctor"),
+                        user= UserDTO(it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Doctor"),
                         specialization = it.specialization,
                         salary = it.salary
                     )
@@ -154,6 +156,8 @@ class UserService (
                 .email(it.email)
                 .passw(passwordEncoder.encode(it.passw))
                 .roles(setOf(role))
+                .age(it.age)
+                .gender(it.gender)
                 .build()
         }
 
@@ -161,7 +165,7 @@ class UserService (
 
         var result = patientEntity.let {
 
-              PatientDTO(it.id,it.firstName,it.lastName,it.email,it.passw,"Patient")
+              PatientDTO(it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Patient")
 
 
         }
@@ -171,7 +175,7 @@ class UserService (
     fun retrieveAllPatients(): Collection<PatientDTO> {
         return patientRepository.findAll().map {
                 PatientDTO(
-                    it.id,it.firstName,it.lastName,it.email,it.passw,"Patient"
+                    it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Patient"
                 )
         }
     }
@@ -183,7 +187,7 @@ class UserService (
                 val patient = patientOptional.orElseThrow { NoUserFoundException("Patient with ID $id not found") }
 
                 return PatientDTO(
-                        patient.id, patient.firstName, patient.lastName, patient.email, patient.passw, "Patient"
+                        patient.id, patient.firstName, patient.lastName, patient.email, patient.passw, patient.gender,patient.age,"Patient"
                     )
             }
             else -> throw InvalidInputException("Invalid ID format. ID must be an integer.")
@@ -215,9 +219,10 @@ class UserService (
                     it.lastName = patientInput.lastname
                     it.passw=  passwordEncoder.encode(patientInput.passw)
                     it.email = patientInput.email
-
+                    it.age= patientInput.age
+                    it.gender=patientInput.gender
                     patientRepository.save(it)
-                    PatientDTO(it.id,it.firstName,it.lastName,it.email,it.passw,"Patient")
+                    PatientDTO(it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Patient")
 
 
                 }

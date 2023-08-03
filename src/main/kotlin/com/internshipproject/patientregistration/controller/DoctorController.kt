@@ -7,6 +7,7 @@ import com.internshipproject.patientregistration.dto._internal.DoctorDTO
 import com.internshipproject.patientregistration.dto._public.DoctorDTOPublic
 import com.internshipproject.patientregistration.dto._internal.UserDTO
 import com.internshipproject.patientregistration.dto._public.UserDTOPublic
+import com.internshipproject.patientregistration.entity.user.Gender
 import com.internshipproject.patientregistration.exception.InvalidInputException
 import com.internshipproject.patientregistration.service.UserService
 import org.springframework.http.HttpStatus
@@ -32,10 +33,14 @@ class DoctorController (
         val lastName = userNode["lastname"]?.textValue() ?: throw InvalidInputException("Invalid JSON format: 'lastname' is missing")
         val email = userNode["email"]?.textValue() ?: throw InvalidInputException("Invalid JSON format: 'email' is missing")
         val passw = userNode["passw"]?.textValue() ?: throw InvalidInputException("Invalid JSON format: 'passw' is missing")
-
+        val gender = userNode["gender"]?.textValue() ?: throw InvalidInputException("Invalid JSON format: 'gender' is missing")
+        val age =   if (userNode["age"] == null || !userNode["age"].isNumber )
+                 throw InvalidInputException("Invalid JSON format: 'age' is missing")
+                else
+                userNode["age"].intValue()
         // Check for extra properties in the 'user' object
         val userFieldNames = userNode.fieldNames().asSequence().toSet()
-        val validUserFieldNames = setOf("firstname", "lastname", "email", "passw")
+        val validUserFieldNames = setOf("firstname", "lastname", "email", "passw","gender","age")
         if (!validUserFieldNames.containsAll(userFieldNames)) {
             val extraFields = userFieldNames - validUserFieldNames
             throw InvalidInputException("Invalid JSON format: Extra fields found in 'user': $extraFields")
@@ -52,8 +57,18 @@ class DoctorController (
             throw InvalidInputException("Invalid JSON format: Extra fields found: $extraFields")
         }
 
+
+
+
         return DoctorDTO(
-            UserDTO(null, firstName, lastName, email, passw),
+            UserDTO(null, firstName, lastName, email, passw,gender.let {
+                when (it) {
+                    "Male" -> Gender.MALE
+                    "Female" -> Gender.FEMALE
+                    else -> throw InvalidInputException("Invalid JSON format: Gender should be Male or Female")
+                }
+
+            },age ),
             specialization,
             salary
         )
@@ -75,7 +90,7 @@ class DoctorController (
             ResponseEntity.badRequest().body(CustomJsonFormatResponse(
                 "${HttpStatus.BAD_REQUEST}",
                 e.message ?: "Wrong JSON Format",
-                DoctorDTOPublic(UserDTOPublic("firstname", "lastname" , "email" ,"password"), "specialization" , 1000.0 )
+                DoctorDTOPublic(UserDTOPublic("firstname", "lastname" , "email" ,"password",Gender.MALE,21), "specialization" , 1000.0 )
             ))
         }
     }
@@ -111,7 +126,7 @@ class DoctorController (
             ResponseEntity.badRequest().body(CustomJsonFormatResponse(
                 "${HttpStatus.BAD_REQUEST}",
                 e.message ?: "Wrong JSON Format",
-                DoctorDTOPublic(UserDTOPublic("firstname", "lastname" , "email" ,"password"), "specialization" , 1000.0 )
+                DoctorDTOPublic(UserDTOPublic("firstname", "lastname" , "email" ,"password",Gender.MALE,21), "specialization" , 1000.0 )
             ))
         }
 

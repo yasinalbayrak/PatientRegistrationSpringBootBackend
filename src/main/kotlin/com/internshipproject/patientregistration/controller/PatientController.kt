@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.internshipproject.patientregistration.config.securityExceptions.CustomJsonFormatResponse
 import com.internshipproject.patientregistration.dto._internal.PatientDTO
 import com.internshipproject.patientregistration.dto._public.PatientDTOPublic
+import com.internshipproject.patientregistration.entity.user.Gender
 import com.internshipproject.patientregistration.exception.InvalidInputException
 import com.internshipproject.patientregistration.service.UserService
 import org.springframework.http.HttpStatus
@@ -24,16 +25,27 @@ class PatientController (
         val lastName = jsonNode["lastname"]?.textValue() ?: throw InvalidInputException("Invalid JSON format: 'lastname' is missing")
         val email = jsonNode["email"]?.textValue() ?: throw InvalidInputException("Invalid JSON format: 'email' is missing")
         val passw = jsonNode["passw"]?.textValue() ?: throw InvalidInputException("Invalid JSON format: 'passw' is missing")
-
+        val gender = jsonNode["gender"]?.textValue() ?: throw InvalidInputException("Invalid JSON format: 'gender' is missing")
+        val age =   if (jsonNode["age"] == null || !jsonNode["age"].isNumber )
+            throw InvalidInputException("Invalid JSON format: 'age' is missing")
+        else
+            jsonNode["age"].intValue()
         // Check for extra properties in the 'user' object
         val userFieldNames = jsonNode.fieldNames().asSequence().toSet()
-        val validUserFieldNames = setOf("firstname", "lastname", "email", "passw")
+        val validUserFieldNames = setOf("firstname", "lastname", "email", "passw","gender","age")
         if (!validUserFieldNames.containsAll(userFieldNames)) {
             val extraFields = userFieldNames - validUserFieldNames
             throw InvalidInputException("Invalid JSON format: Extra fields found in 'user': $extraFields")
         }
 
-        return PatientDTO(null, firstName, lastName, email, passw)
+        return PatientDTO(null, firstName, lastName, email, passw,gender.let {
+            when (it) {
+                "Male" -> Gender.MALE
+                "Female" -> Gender.FEMALE
+                else -> throw InvalidInputException("Invalid JSON format: Gender should be Male or Female")
+            }
+
+        },age )
 
     }
 
@@ -54,7 +66,7 @@ class PatientController (
                 CustomJsonFormatResponse(
                 "${HttpStatus.BAD_REQUEST}",
                 e.message ?: "Wrong JSON Format",
-                PatientDTOPublic("firstname", "lastname" , "email" ,"password")
+                PatientDTOPublic("firstname", "lastname" , "email" ,"password",Gender.MALE,21)
             )
             )
         }
@@ -93,7 +105,7 @@ class PatientController (
                 CustomJsonFormatResponse(
                 "${HttpStatus.BAD_REQUEST}",
                 e.message ?: "Wrong JSON Format",
-                    PatientDTOPublic("firstname", "lastname" , "email" ,"password")
+                    PatientDTOPublic("firstname", "lastname" , "email" ,"password", Gender.MALE,21)
             )
             )
         }
