@@ -63,8 +63,8 @@ class DoctorController (
         return DoctorDTO(
             UserDTO(null, firstName, lastName, email, passw,gender.let {
                 when (it) {
-                    "Male" -> Gender.MALE
-                    "Female" -> Gender.FEMALE
+                    "MALE" -> Gender.MALE
+                    "FEMALE" -> Gender.FEMALE
                     else -> throw InvalidInputException("Invalid JSON format: Gender should be Male or Female")
                 }
 
@@ -84,7 +84,7 @@ class DoctorController (
 
             val doctorDTO = userService.addDoctor(doctorInput)
 
-            ResponseEntity.ok(doctorDTO)
+            ResponseEntity.status(HttpStatus.CREATED).body(doctorDTO)
         } catch (e: InvalidInputException) {
 
             ResponseEntity.badRequest().body(CustomJsonFormatResponse(

@@ -14,7 +14,7 @@ version = "0.0.1-SNAPSHOT"
 java {
 	sourceCompatibility = JavaVersion.VERSION_17
 }
-
+extra["testcontainersVersion"] = "1.16.2"
 repositories {
 	mavenCentral()
 }
@@ -36,10 +36,14 @@ dependencies {
 
 
     runtimeOnly("org.postgresql:postgresql")
-
+	testImplementation("io.mockk:mockk:1.10.4")
+	testImplementation("com.ninja-squad:springmockk:3.0.1")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-webflux")
 	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.testcontainers:junit-jupiter")
+	testImplementation("org.testcontainers:postgresql")
 }
 
 tasks.withType<KotlinCompile> {
@@ -51,4 +55,11 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+sourceSets{
+	test{
+		java{
+			setSrcDirs(listOf("src/test/intg","src/test/unit"))
+		}
+	}
 }
