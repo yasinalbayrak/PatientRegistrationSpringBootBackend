@@ -3,15 +3,12 @@ package com.internshipproject.patientregistration.entity.appointment
 import com.internshipproject.patientregistration.entity.user.types.Doctor
 import com.internshipproject.patientregistration.entity.user.types.Patient
 import jakarta.persistence.*
+import org.springframework.beans.factory.annotation.Autowired
 import java.time.Duration
 import java.time.LocalDateTime
-import java.util.Date
 
 
 @Entity
-@Table(uniqueConstraints = [
-    UniqueConstraint(columnNames = ["doctor_id", "patient_id", "appointment_date"])
-])
 class Appointment(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,8 +29,11 @@ class Appointment(
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    var status: AppointmentStatus = AppointmentStatus.ACTIVE
+    var status: AppointmentStatus = AppointmentStatus.ACTIVE,
+
+
 ) {
+
 
     data class Builder(
         var id: Int = 0,

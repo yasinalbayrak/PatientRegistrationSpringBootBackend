@@ -33,7 +33,8 @@ dependencies {
 	implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
 	implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
-
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	//implementation("org.flywaydb:flyway-core")
 
     runtimeOnly("org.postgresql:postgresql")
 	testImplementation("io.mockk:mockk:1.10.4")
@@ -44,6 +45,14 @@ dependencies {
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:postgresql")
+	
+	
+	
+	//delete
+	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+
 }
 
 tasks.withType<KotlinCompile> {

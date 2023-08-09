@@ -1,28 +1,27 @@
-package com.internshipproject.patientregistration.config
+package com.internshipproject.patientregistration.controller
 
+import com.internshipproject.patientregistration.config.JwtAuthenticationFilter
 import com.internshipproject.patientregistration.config.securityExceptions.CustomAccessDeniedHandler
 import com.internshipproject.patientregistration.config.securityExceptions.CustomAuthenticationEntryPoint
-import com.internshipproject.patientregistration.service.LogoutService
 import lombok.RequiredArgsConstructor
 import mu.KLogging
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.security.web.authentication.logout.LogoutHandler
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
-@Configuration
+@TestConfiguration
 @EnableWebSecurity
-@RequiredArgsConstructor
-class SecurityConfig {
+@AutoConfigureMockMvc
+class TestSecurityConfig {
 
     companion object : KLogging()
     @Bean
@@ -31,49 +30,32 @@ class SecurityConfig {
         jwtAuthFilter: JwtAuthenticationFilter,
         authenticationProvider: AuthenticationProvider,
         customAuthenticationEntryPoint: CustomAuthenticationEntryPoint,
-        customAccessDeniedHandler: CustomAccessDeniedHandler,
-        logoutService: LogoutService
-    ): SecurityFilterChain{
+        customAccessDeniedHandler: CustomAccessDeniedHandler
+    ): SecurityFilterChain {
 
-
-         http
-             .csrf {
+        logger.info ("Sila: asdasd")
+        http
+            .csrf {
                 it.disable()
-             }
-             .cors {
-                 it.configurationSource(corsConfigurationSource())
-             }
-             .authorizeHttpRequests {
-                    it
-                        .requestMatchers("/api/v1/auth/**").permitAll()
-                        //.requestMatchers("/api/v1/user/**").authenticated()
-                        .anyRequest().permitAll()
+            }
+            .cors {
+                it.configurationSource(corsConfigurationSource())
+            }
+            .authorizeHttpRequests {
+                it.anyRequest().permitAll()
 
-             }
+            }
             .sessionManagement {
-                    it
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                it
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
             .exceptionHandling {
-                 it.authenticationEntryPoint(customAuthenticationEntryPoint)
+                it.authenticationEntryPoint(customAuthenticationEntryPoint)
                 it.accessDeniedHandler(customAccessDeniedHandler)
 
             }
-
             .authenticationProvider(authenticationProvider)
-
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
-
-             .logout {
-                 it
-                     .logoutUrl("/api/v1/auth/logout")
-                     .addLogoutHandler(logoutService)
-                     .logoutSuccessHandler { request, response, authentication ->
-                         SecurityContextHolder.clearContext()
-
-                     }
-             }
-
 
 
         return http.build()

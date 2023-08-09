@@ -20,7 +20,6 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 
 @Service
@@ -36,7 +35,7 @@ class AppointmentService (
 
     fun addAppointment(appointmentInput: AppointmentDTOPublic): AppointmentDTO {
 
-        if(appointmentRepository.existsAppointmentWithDoctorPatientAndDate(appointmentInput.doctorID!!, appointmentInput.patientID!!,convertStringToLocalDateTime(appointmentInput.date!!)))
+        if(appointmentRepository.existsAppointmentWithDoctorPatientAndDate(appointmentInput.doctorID!!,convertStringToLocalDateTime(appointmentInput.date!!)))
             throw YourCustomEmailAlreadyExistsException("This appointment date is already booked by someone else.", HttpStatus.CONFLICT)
 
 
@@ -66,7 +65,8 @@ class AppointmentService (
                     it.doctor!!.salary),
 
                 patient = PatientDTO(id = it.patient!!.id, it.patient!!.firstName,it.patient!!.lastName,it.patient!!.email,it.patient!!.passw,it.patient!!.gender,it.patient!!.age,"Patient"),
-                date = it.date.toString()
+                date = it.date.toString(),
+                status = it.status
             )
         }
         return result
@@ -81,7 +81,8 @@ class AppointmentService (
                     it.doctor!!.specialization,
                     it.doctor!!.salary),
                 patient = PatientDTO(id = it.patient!!.id, it.patient!!.firstName,it.patient!!.lastName,it.patient!!.email,it.patient!!.passw,it.patient!!.gender,it.patient!!.age,"Patient"),
-                date = it.date.toString()
+                date = it.date.toString(),
+                status = it.status
             )
         }
     }
@@ -99,7 +100,8 @@ class AppointmentService (
                         appointment.doctor!!.specialization,
                         appointment.doctor!!.salary),
                     patient = PatientDTO(id = appointment.patient!!.id, appointment.patient!!.firstName,appointment.patient!!.lastName,appointment.patient!!.email,appointment.patient!!.passw,appointment.patient!!.gender,appointment.patient!!.age,"Patient"),
-                    date = appointment.date.toString()
+                    date = appointment.date.toString(),
+                    status = appointment.status
                 )
             }
             else -> throw InvalidInputException("Invalid ID format. ID must be an integer.")
@@ -130,7 +132,7 @@ class AppointmentService (
                     it.doctor = userService.getDoctor(appointmentInput.doctorID!!).orElseThrow{NoUserFoundException("Doctor with ID ${appointmentInput.doctorID!!} not found")}
                     it.patient = userService.getPatient(appointmentInput.patientID!!).orElseThrow{NoUserFoundException("Patient with ID ${appointmentInput.patientID!!} not found")}
                     it.date =   convertStringToLocalDateTime(appointmentInput.date!!)
-                    if(appointmentRepository.existsAppointmentWithDoctorPatientAndDate(appointmentInput.doctorID!!, appointmentInput.patientID!!,convertStringToLocalDateTime(appointmentInput.date!!)))
+                    if(appointmentRepository.existsAppointmentWithDoctorPatientAndDate(appointmentInput.doctorID!!,convertStringToLocalDateTime(appointmentInput.date!!)))
                         throw YourCustomEmailAlreadyExistsException("This appointment date is already booked by someone else.", HttpStatus.CONFLICT)
                     appointmentRepository.save(it)
                     AppointmentDTO(
@@ -163,6 +165,53 @@ class AppointmentService (
                 appointment.status = AppointmentStatus.PASSED
                 appointmentRepository.save(appointment)
             }
+        }
+    }
+
+    fun cancelAppointment(id: Any): ResponseEntity<Any> {
+        when (val idInt = id.toString().toIntOrNull()) {
+            is Int -> {
+                val appointmentOptional = appointmentRepository.findById(idInt)
+                val appointment = appointmentOptional.orElseThrow { NoUserFoundException("Appointment with ID $id not found") }
+                appointment.status = AppointmentStatus.CANCELLED
+
+
+
+                appointmentRepository.save(appointment)
+                val apponitmentDTO = AppointmentDTO(
+                    id= appointment.id,
+                    doctor = DoctorDTO(
+                        UserDTO(id = appointment.doctor!!.id, appointment.doctor!!.firstName,appointment.doctor!!.lastName,appointment.doctor!!.email,appointment.doctor!!.passw,appointment.doctor!!.gender,appointment.doctor!!.age,"Doctor"),
+                        appointment.doctor!!.specialization,
+                        appointment.doctor!!.salary),
+                    patient = PatientDTO(id = appointment.patient!!.id, appointment.patient!!.firstName,appointment.patient!!.lastName,appointment.patient!!.email,appointment.patient!!.passw,appointment.patient!!.gender,appointment.patient!!.age,"Patient"),
+                    date = appointment.date.toString(),
+                    status = appointment.status
+                )
+                return ResponseEntity.status(HttpStatus.OK).body(apponitmentDTO)
+            }
+            else -> throw InvalidInputException("Invalid ID format. ID must be an integer.")
+        }
+    }
+
+    fun getAllAppointmentsByUserId(id: Any): List<AppointmentDTO> {
+        when (val idInt = id.toString().toIntOrNull()) {
+            is Int -> {
+                val appointmentsOptional = appointmentRepository.findByUserId(idInt)
+                val appointments = appointmentsOptional.orElseThrow { NoUserFoundException("Appointment for the user with ID $id not found") }
+
+                return appointments.map {   AppointmentDTO(
+                    id= it.id,
+                    doctor = DoctorDTO(
+                        UserDTO(id = it.doctor!!.id, it.doctor!!.firstName,it.doctor!!.lastName,it.doctor!!.email,it.doctor!!.passw,it.doctor!!.gender,it.doctor!!.age,"Doctor"),
+                        it.doctor!!.specialization,
+                        it.doctor!!.salary),
+                    patient = PatientDTO(id = it.patient!!.id, it.patient!!.firstName,it.patient!!.lastName,it.patient!!.email,it.patient!!.passw,it.patient!!.gender,it.patient!!.age,"Patient"),
+                    date = it.date.toString(),
+                    status = it.status
+                )}
+            }
+            else -> throw InvalidInputException("Invalid ID format. ID must be an integer.")
         }
     }
 

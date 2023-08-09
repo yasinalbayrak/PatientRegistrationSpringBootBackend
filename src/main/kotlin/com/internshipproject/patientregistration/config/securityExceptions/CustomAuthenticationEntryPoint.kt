@@ -1,6 +1,8 @@
 package com.internshipproject.patientregistration.config.securityExceptions
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.internshipproject.patientregistration.exception.TokenIsNotValidException
 import com.internshipproject.patientregistration.exception.YourCustomEmailAlreadyExistsException
+import io.jsonwebtoken.ExpiredJwtException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import mu.KLogging
@@ -15,7 +17,8 @@ import java.io.IOException
 
 @Component
 class CustomAuthenticationEntryPoint(
-    @Qualifier("handlerExceptionResolver") val resolver: HandlerExceptionResolver
+    @Qualifier("handlerExceptionResolver") val resolver: HandlerExceptionResolver,
+
 ) : AuthenticationEntryPoint {
 
     companion object {
@@ -30,11 +33,23 @@ class CustomAuthenticationEntryPoint(
         response: HttpServletResponse?,
         authException: AuthenticationException?
     ) {
-        logg.logger.info ("Yasooo entry point")
+
 
 
         when (authException) {
             is YourCustomEmailAlreadyExistsException -> {
+                response?.apply {
+                    status = HttpStatus.CONFLICT.value()
+                    contentType = "application/json"
+                    val customErrorResponse = CustomErrorResponse(
+                        error = authException.status?.toString() ?: "Auth Error",
+                        message = authException.message ?: ""
+                    )
+                    writer.write(objectMapper.writeValueAsString(customErrorResponse))
+                    writer.flush()
+                }
+            }
+            is TokenIsNotValidException -> {
                 response?.apply {
                     status = HttpStatus.CONFLICT.value()
                     contentType = "application/json"
@@ -55,5 +70,7 @@ class CustomAuthenticationEntryPoint(
                 }
             }
         }
+
     }
+
 }

@@ -1,12 +1,12 @@
 package com.internshipproject.patientregistration.config.auth
 
 
+import com.internshipproject.patientregistration.entity.auth.Token
+import com.internshipproject.patientregistration.entity.auth.TokenRepository
+import com.internshipproject.patientregistration.entity.auth.TokenType
+import com.internshipproject.patientregistration.entity.user.*
 import com.internshipproject.patientregistration.exception.YourCustomEmailAlreadyExistsException
 import com.internshipproject.patientregistration.service.JwtService
-import com.internshipproject.patientregistration.entity.user.Role
-import com.internshipproject.patientregistration.entity.user.RoleRepository
-import com.internshipproject.patientregistration.entity.user.User
-import com.internshipproject.patientregistration.entity.user.UserRepository
 import com.internshipproject.patientregistration.entity.user.types.Doctor
 import com.internshipproject.patientregistration.entity.user.types.DoctorRepository
 import com.internshipproject.patientregistration.entity.user.types.Patient
@@ -28,7 +28,8 @@ class AuthenticationService(
     private val roleService: RoleService,
     private val passwordEncoder: PasswordEncoder,
     private val jwtService: JwtService,
-    private val authenticationManager: AuthenticationManager
+    private val authenticationManager: AuthenticationManager,
+    private val tokenRepository: TokenRepository
 ) {
 
     companion object: KLogging()
@@ -44,7 +45,7 @@ class AuthenticationService(
         //doctorRole.name = "Doctor"
 
         val patientRole = roleService.addRole("Patient")
-        logger.info ("Yasin: ${request.firstname}")
+
 /*        val user : User = Doctor.builder()
             .firstName(request.firstname)
             .lastName(request.lastname)
@@ -60,6 +61,8 @@ class AuthenticationService(
             .email(request.email)
             .passw(passwordEncoder.encode( request.password))
             .roles(setOf(patientRole))
+            .age(request.age)
+            .gender(request.gender)
             .build()
 
 
@@ -70,14 +73,22 @@ class AuthenticationService(
         // Alternatively, you can return an error response to the user
         // and skip throwing an exception, based on your application's requirements.
 
-        logger.info ("Yasin: ${user.firstName}")
+
         repository.save(user)
         val roleMap : Map<String,Any> = mapOf(
             "role" to  patientRole.name
         )
         var jwtToken = jwtService.generateToken(userDetails =  user, extraClaims =  roleMap)
+        var token = Token.builder()
+            .user(user)
+            .token(jwtToken)
+            .tokenType(TokenType.BEARER)
+            .expired(false)
+            .revoked(false)
+            .build()
 
 
+        tokenRepository.save(token)
 
         return AuthenticationResponse
             .builder()
@@ -106,12 +117,36 @@ class AuthenticationService(
             "role" to  user.roles
         )
         val jwtToken = jwtService.generateToken(userDetails = user, extraClaims =  roleMap)
+        revokeAllUserTokens(user)
+
+        var token = Token.builder()
+            .user(user)
+            .token(jwtToken)
+            .tokenType(TokenType.BEARER)
+            .expired(false)
+            .revoked(false)
+            .build()
+
+
+        tokenRepository.save(token)
 
         return AuthenticationResponse
             .builder()
             .token(jwtToken)
             .id(user.id)
             .build()
+    }
+
+
+    private fun revokeAllUserTokens(user: User){
+        val validUserTokens = tokenRepository.findAllValidTokensByUser(user.id)
+        if(validUserTokens.isEmpty() )
+            return
+        validUserTokens.forEach{
+            it.expired = true
+            it.revoked = true
+        }
+        tokenRepository.saveAll(validUserTokens)
     }
 
 }

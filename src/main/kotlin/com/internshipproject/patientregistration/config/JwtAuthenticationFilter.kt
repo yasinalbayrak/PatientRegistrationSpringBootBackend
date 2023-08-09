@@ -1,6 +1,8 @@
 package com.internshipproject.patientregistration.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.internshipproject.patientregistration.entity.auth.TokenRepository
+import com.internshipproject.patientregistration.exception.TokenIsNotValidException
 import com.internshipproject.patientregistration.exception.YourCustomEmailAlreadyExistsException
 import com.internshipproject.patientregistration.service.JwtService
 import jakarta.servlet.FilterChain
@@ -8,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import lombok.NonNull
 import lombok.RequiredArgsConstructor
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -17,13 +20,15 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
+import javax.naming.AuthenticationException
 
 
 @Component
 @RequiredArgsConstructor
 class JwtAuthenticationFilter(
     val jwtService: JwtService,
-    val userDetailsService: UserDetailsService
+    val userDetailsService: UserDetailsService,
+    val tokenRepository: TokenRepository
 ) : OncePerRequestFilter() {
 
 
@@ -46,10 +51,23 @@ class JwtAuthenticationFilter(
         //logger.info("Token: $jwt")
 
         // extract the userEmail from JWT Token
-        userEmail = jwtService.extractUsername(jwt)
+        try {
+            userEmail = jwtService.extractUsername(jwt)
+        }
+        catch (ex:Exception){
+            sendErrorResponse(response, "Token is not valid", HttpServletResponse.SC_UNAUTHORIZED)
+            return
+        }
+
         if( userEmail != null && SecurityContextHolder.getContext().authentication == null){
             val userDetails:UserDetails = this.userDetailsService.loadUserByUsername(userEmail)
-            if (jwtService.isTokenValid(jwt,userDetails)) run {
+
+            var isTokenValid = tokenRepository.findByToken(jwt)
+                .map {
+                    !it.expired && !it.revoked
+                }.orElse(false)
+
+            if (jwtService.isTokenValid(jwt,userDetails) && isTokenValid) run {
                 val authToken: UsernamePasswordAuthenticationToken = UsernamePasswordAuthenticationToken(
                     userDetails,
                     null,
@@ -58,7 +76,11 @@ class JwtAuthenticationFilter(
                 )
                 authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                 SecurityContextHolder.getContext().authentication=authToken
+            }else {
+                sendErrorResponse(response, "Token is not valid", HttpServletResponse.SC_UNAUTHORIZED)
+                return
             }
+
         }
 
         filterChain.doFilter(request, response)
@@ -67,4 +89,11 @@ class JwtAuthenticationFilter(
 
 
     }
+    private fun sendErrorResponse(response: HttpServletResponse, errorMessage: String, status: Int) {
+        response.contentType = "application/json"
+        response.status = status
+        response.writer.write("{\"error\": \"$errorMessage\"}")
+        response.writer.flush()
+    }
+
 }

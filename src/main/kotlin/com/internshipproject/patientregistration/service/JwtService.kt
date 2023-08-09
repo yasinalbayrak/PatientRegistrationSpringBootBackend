@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service
 import java.security.Key
 import java.util.*
 import java.util.function.Function
-import kotlin.collections.HashMap
 
 
 @Service
 class JwtService {
     private val SECRET_KEY :String = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970"
-
+    private var jwtExpiration: Long = 86400000
+    private var refreshExpiration: Long = 604800000
     fun extractUsername(token: String): String? {
         return extractClaim(token,Claims::getSubject)
     }
@@ -49,6 +49,27 @@ class JwtService {
             ))
             .signWith(getSignInKey(),SignatureAlgorithm.HS256)
             .compact();
+    }
+
+    fun generateRefreshToken(
+        userDetails: UserDetails
+    ): String {
+        return buildToken(HashMap(), userDetails, refreshExpiration)
+    }
+
+    private fun buildToken(
+        extraClaims: Map<String, Any?>,
+        userDetails: UserDetails,
+        expiration: Long
+    ): String {
+        return Jwts
+            .builder()
+            .setClaims(extraClaims)
+            .setSubject(userDetails.username)
+            .setIssuedAt(Date(System.currentTimeMillis()))
+            .setExpiration(Date(System.currentTimeMillis() + expiration))
+            .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+            .compact()
     }
 
     fun isTokenValid(token :String,userDetails: UserDetails): Boolean {

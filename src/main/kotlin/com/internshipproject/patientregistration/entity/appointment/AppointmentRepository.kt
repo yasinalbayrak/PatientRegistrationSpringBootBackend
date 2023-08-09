@@ -7,8 +7,12 @@ import java.util.*
 
 interface AppointmentRepository : JpaRepository<Appointment,Int> {
 
-    @Query("SELECT COUNT(a) > 0 FROM Appointment a WHERE a.doctor.id = :doctorId AND a.patient.id = :patientId AND a.date = :appointmentDate")
-    fun existsAppointmentWithDoctorPatientAndDate(doctorId: Int, patientId: Int, appointmentDate: LocalDateTime): Boolean
+    @Query("SELECT COUNT(a) > 0 FROM Appointment a WHERE a.doctor.id = :doctorId AND a.date = :appointmentDate AND a.status = 'ACTIVE' ")
+    fun existsAppointmentWithDoctorPatientAndDate(doctorId: Int, appointmentDate: LocalDateTime): Boolean
+
+
+    @Query("Select a from Appointment a where a.patient.id = :userId")
+    fun findByUserId(userId: Int) :Optional<List<Appointment>>
 
 
 }

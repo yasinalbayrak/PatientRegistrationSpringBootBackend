@@ -43,11 +43,14 @@ class AppointmentController(
             val workingStart = LocalTime.of(8, 0)
             val workingEnd = LocalTime.of(18, 0)
             val time = LocalTime.of(hour, minute)
-            if( parsedDate.isBefore(LocalDateTime.now())){
+
+            if (parsedDate.isBefore(LocalDateTime.now())) {
                 return false
             }
-            time == workingStart || (time.isAfter(workingStart) && time.isBefore(workingEnd))
+
+            minute == 0 && ((time == workingStart) || (time.isAfter(workingStart) && time.isBefore(workingEnd)))
         } catch (e: Exception) {
+            // Handle or log the exception here
             false
         }
     }
@@ -91,7 +94,7 @@ class AppointmentController(
 
             val appointmentDTO: AppointmentDTO = appointmentService.addAppointment(appointmentInput)
 
-            ResponseEntity.ok(appointmentDTO)
+            ResponseEntity.status(HttpStatus.CREATED).body(appointmentDTO)
         } catch (e: InvalidInputException) {
 
             ResponseEntity.badRequest().body(
@@ -108,6 +111,12 @@ class AppointmentController(
     fun getAllAppointments() : Collection<AppointmentDTO> {
         return appointmentService.retrieveAllAppointments()
     }
+
+    @GetMapping("/user/{id}")
+    fun getAllAppointmentsByUserId(@PathVariable id: Any) : Collection<AppointmentDTO> {
+        return appointmentService.getAllAppointmentsByUserId(id)
+    }
+
 
     @GetMapping("/{id}")
     fun getAppointment(@PathVariable id:Any): AppointmentDTO{
@@ -140,5 +149,12 @@ class AppointmentController(
             )
         }
     }
+
+
+    @PostMapping("/{id}")
+    fun cancelAppointment(@PathVariable id:Any): ResponseEntity<Any> {
+        return appointmentService.cancelAppointment(id)
+    }
+
 
 }

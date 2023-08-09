@@ -3,7 +3,9 @@ package com.internshipproject.patientregistration.globalExceptionHandler
 import com.internshipproject.patientregistration.config.securityExceptions.CustomErrorResponse
 import com.internshipproject.patientregistration.exception.InvalidInputException
 import com.internshipproject.patientregistration.exception.NoUserFoundException
+import com.internshipproject.patientregistration.exception.TokenIsNotValidException
 import com.internshipproject.patientregistration.exception.YourCustomEmailAlreadyExistsException
+import io.jsonwebtoken.ExpiredJwtException
 import mu.KLogging
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -73,7 +75,16 @@ class GlobalErrorHandler : ResponseEntityExceptionHandler() {
 
 
     }
+    @ExceptionHandler(TokenIsNotValidException::class)
+    fun handleTokenIsNotValidException(ex: TokenIsNotValidException, request: WebRequest): ResponseEntity<Any>{
+        logger.error("Exception observed: ${ex.message}",ex)
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body(ex.message?.let {
+                CustomErrorResponse(message = it, error = "${HttpStatus.UNAUTHORIZED}")
+            })
 
+
+    }
     @ExceptionHandler(java.lang.Exception::class)
     fun handleAllExceptions(ex: Exception, request: WebRequest): ResponseEntity<Any>{
         logger.error("Exception observed : ${ex.message}",ex)

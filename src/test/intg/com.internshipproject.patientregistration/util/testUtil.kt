@@ -4,8 +4,9 @@ import com.internshipproject.patientregistration.entity.user.Gender
 import com.internshipproject.patientregistration.entity.user.Role
 import com.internshipproject.patientregistration.entity.user.types.Doctor
 import com.internshipproject.patientregistration.entity.user.types.Patient
-
-
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
+import java.util.*
 
 
 fun doctorEntityList(role: Role): List<Doctor> = listOf(
@@ -59,3 +60,5 @@ fun patientEntity(role:Role) = Patient
     .passw("1234")
     .roles(setOf(role))
     .build()
+
+

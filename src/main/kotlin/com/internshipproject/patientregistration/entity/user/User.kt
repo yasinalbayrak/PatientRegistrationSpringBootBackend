@@ -1,6 +1,6 @@
 package com.internshipproject.patientregistration.entity.user
 
-import com.internshipproject.patientregistration.entity.user.types.Doctor
+import com.internshipproject.patientregistration.entity.auth.Token
 import jakarta.persistence.*
 
 import org.springframework.security.core.GrantedAuthority
@@ -27,9 +27,10 @@ abstract class User(
 
     open var passw: String = "",
 
+    @OneToMany(mappedBy = "user")
+    open val tokens: List<Token> = emptyList(),
 
-
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_roles",
         joinColumns = [JoinColumn(name = "user_id")],
