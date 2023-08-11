@@ -116,7 +116,10 @@ class AppointmentController(
     fun getAllAppointmentsByUserId(@PathVariable id: Any) : Collection<AppointmentDTO> {
         return appointmentService.getAllAppointmentsByUserId(id)
     }
-
+    @GetMapping("/doctor/{id}")
+    fun getAllAppointmentsByDoctorId(@PathVariable id: Any) : Collection<AppointmentDTO> {
+        return appointmentService.getAllAppointmentsByDoctorId(id)
+    }
 
     @GetMapping("/{id}")
     fun getAppointment(@PathVariable id:Any): AppointmentDTO{

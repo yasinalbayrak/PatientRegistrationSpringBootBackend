@@ -14,5 +14,6 @@ interface AppointmentRepository : JpaRepository<Appointment,Int> {
     @Query("Select a from Appointment a where a.patient.id = :userId")
     fun findByUserId(userId: Int) :Optional<List<Appointment>>
 
-
+    @Query("Select a from Appointment a where a.doctor.id = :userId")
+    fun findByDoctorId(userId: Int) :Optional<List<Appointment>>
 }

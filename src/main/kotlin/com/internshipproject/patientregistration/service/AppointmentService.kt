@@ -215,5 +215,26 @@ class AppointmentService (
         }
     }
 
+    fun getAllAppointmentsByDoctorId(id: Any): Collection<AppointmentDTO> {
+        when (val idInt = id.toString().toIntOrNull()) {
+            is Int -> {
+                val appointmentsOptional = appointmentRepository.findByDoctorId(idInt)
+                val appointments = appointmentsOptional.orElseThrow { NoUserFoundException("Appointment for the user with ID $id not found") }
+
+                return appointments.map {   AppointmentDTO(
+                    id= it.id,
+                    doctor = DoctorDTO(
+                        UserDTO(id = it.doctor!!.id, it.doctor!!.firstName,it.doctor!!.lastName,it.doctor!!.email,it.doctor!!.passw,it.doctor!!.gender,it.doctor!!.age,"Doctor"),
+                        it.doctor!!.specialization,
+                        it.doctor!!.salary),
+                    patient = PatientDTO(id = it.patient!!.id, it.patient!!.firstName,it.patient!!.lastName,it.patient!!.email,it.patient!!.passw,it.patient!!.gender,it.patient!!.age,"Patient"),
+                    date = it.date.toString(),
+                    status = it.status
+                )}
+            }
+            else -> throw InvalidInputException("Invalid ID format. ID must be an integer.")
+        }
+    }
+
 
 }
