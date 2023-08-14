@@ -32,13 +32,13 @@ class PatientController (
             jsonNode["age"].intValue()
         // Check for extra properties in the 'user' object
         val userFieldNames = jsonNode.fieldNames().asSequence().toSet()
-        val validUserFieldNames = setOf("firstname", "lastname", "email", "passw","gender","age")
+        val validUserFieldNames = setOf("firstname", "lastname", "email","passw","gender","age")
         if (!validUserFieldNames.containsAll(userFieldNames)) {
             val extraFields = userFieldNames - validUserFieldNames
             throw InvalidInputException("Invalid JSON format: Extra fields found in 'user': $extraFields")
         }
 
-        return PatientDTO(null, firstName, lastName, email, passw,gender.let {
+        return PatientDTO(null, firstName, lastName, email, "1234",gender.let {
             when (it) {
                 "MALE" -> Gender.MALE
                 "FEMALE" -> Gender.FEMALE

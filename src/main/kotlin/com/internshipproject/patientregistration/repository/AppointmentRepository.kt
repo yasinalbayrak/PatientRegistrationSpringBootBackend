@@ -1,5 +1,6 @@
-package com.internshipproject.patientregistration.entity.appointment
+package com.internshipproject.patientregistration.repository
 
+import com.internshipproject.patientregistration.entity.appointment.Appointment
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDateTime

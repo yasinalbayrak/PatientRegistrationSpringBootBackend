@@ -6,10 +6,10 @@ import com.internshipproject.patientregistration.dto._internal.PatientDTO
 import com.internshipproject.patientregistration.dto._internal.UserDTO
 import com.internshipproject.patientregistration.dto._public.AppointmentDTOPublic
 import com.internshipproject.patientregistration.entity.appointment.Appointment
-import com.internshipproject.patientregistration.entity.appointment.AppointmentRepository
+import com.internshipproject.patientregistration.repository.AppointmentRepository
 import com.internshipproject.patientregistration.entity.appointment.AppointmentStatus
 import com.internshipproject.patientregistration.entity.user.types.Doctor
-import com.internshipproject.patientregistration.entity.user.types.DoctorRepository
+import com.internshipproject.patientregistration.repository.DoctorRepository
 import com.internshipproject.patientregistration.entity.user.types.Patient
 import com.internshipproject.patientregistration.exception.InvalidInputException
 import com.internshipproject.patientregistration.exception.NoUserFoundException
@@ -62,7 +62,7 @@ class AppointmentService (
                 doctor = DoctorDTO(
                     UserDTO(id = it.doctor!!.id, it.doctor!!.firstName,it.doctor!!.lastName,it.doctor!!.email,it.doctor!!.passw, it.doctor!!.gender,it.doctor!!.age,"Doctor"),
                     it.doctor!!.specialization,
-                    it.doctor!!.salary),
+                    ),
 
                 patient = PatientDTO(id = it.patient!!.id, it.patient!!.firstName,it.patient!!.lastName,it.patient!!.email,it.patient!!.passw,it.patient!!.gender,it.patient!!.age,"Patient"),
                 date = it.date.toString(),
@@ -79,7 +79,7 @@ class AppointmentService (
                 doctor = DoctorDTO(
                     UserDTO(id = it.doctor!!.id, it.doctor!!.firstName,it.doctor!!.lastName,it.doctor!!.email,it.doctor!!.passw,it.doctor!!.gender,it.doctor!!.age,"Doctor"),
                     it.doctor!!.specialization,
-                    it.doctor!!.salary),
+                    ),
                 patient = PatientDTO(id = it.patient!!.id, it.patient!!.firstName,it.patient!!.lastName,it.patient!!.email,it.patient!!.passw,it.patient!!.gender,it.patient!!.age,"Patient"),
                 date = it.date.toString(),
                 status = it.status
@@ -98,7 +98,7 @@ class AppointmentService (
                     doctor = DoctorDTO(
                         UserDTO(id = appointment.doctor!!.id, appointment.doctor!!.firstName,appointment.doctor!!.lastName,appointment.doctor!!.email,appointment.doctor!!.passw,appointment.doctor!!.gender,appointment.doctor!!.age,"Doctor"),
                         appointment.doctor!!.specialization,
-                        appointment.doctor!!.salary),
+                       ),
                     patient = PatientDTO(id = appointment.patient!!.id, appointment.patient!!.firstName,appointment.patient!!.lastName,appointment.patient!!.email,appointment.patient!!.passw,appointment.patient!!.gender,appointment.patient!!.age,"Patient"),
                     date = appointment.date.toString(),
                     status = appointment.status
@@ -140,7 +140,7 @@ class AppointmentService (
                         doctor = DoctorDTO(
                             UserDTO(id = appointment.doctor!!.id, appointment.doctor!!.firstName,appointment.doctor!!.lastName,appointment.doctor!!.email,appointment.doctor!!.passw,appointment.doctor!!.gender,appointment.doctor!!.age,"Doctor"),
                             appointment.doctor!!.specialization,
-                            appointment.doctor!!.salary),
+                            ),
                         patient = PatientDTO(id = appointment.patient!!.id, appointment.patient!!.firstName,appointment.patient!!.lastName,appointment.patient!!.email,appointment.patient!!.passw,appointment.patient!!.gender,appointment.patient!!.age,"Patient"),
                         date = appointment.date.toString()
                     )
@@ -183,7 +183,7 @@ class AppointmentService (
                     doctor = DoctorDTO(
                         UserDTO(id = appointment.doctor!!.id, appointment.doctor!!.firstName,appointment.doctor!!.lastName,appointment.doctor!!.email,appointment.doctor!!.passw,appointment.doctor!!.gender,appointment.doctor!!.age,"Doctor"),
                         appointment.doctor!!.specialization,
-                        appointment.doctor!!.salary),
+                       ),
                     patient = PatientDTO(id = appointment.patient!!.id, appointment.patient!!.firstName,appointment.patient!!.lastName,appointment.patient!!.email,appointment.patient!!.passw,appointment.patient!!.gender,appointment.patient!!.age,"Patient"),
                     date = appointment.date.toString(),
                     status = appointment.status
@@ -205,7 +205,7 @@ class AppointmentService (
                     doctor = DoctorDTO(
                         UserDTO(id = it.doctor!!.id, it.doctor!!.firstName,it.doctor!!.lastName,it.doctor!!.email,it.doctor!!.passw,it.doctor!!.gender,it.doctor!!.age,"Doctor"),
                         it.doctor!!.specialization,
-                        it.doctor!!.salary),
+                       ),
                     patient = PatientDTO(id = it.patient!!.id, it.patient!!.firstName,it.patient!!.lastName,it.patient!!.email,it.patient!!.passw,it.patient!!.gender,it.patient!!.age,"Patient"),
                     date = it.date.toString(),
                     status = it.status
@@ -226,7 +226,7 @@ class AppointmentService (
                     doctor = DoctorDTO(
                         UserDTO(id = it.doctor!!.id, it.doctor!!.firstName,it.doctor!!.lastName,it.doctor!!.email,it.doctor!!.passw,it.doctor!!.gender,it.doctor!!.age,"Doctor"),
                         it.doctor!!.specialization,
-                        it.doctor!!.salary),
+                        ),
                     patient = PatientDTO(id = it.patient!!.id, it.patient!!.firstName,it.patient!!.lastName,it.patient!!.email,it.patient!!.passw,it.patient!!.gender,it.patient!!.age,"Patient"),
                     date = it.date.toString(),
                     status = it.status

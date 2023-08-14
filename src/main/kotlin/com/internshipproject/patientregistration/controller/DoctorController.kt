@@ -47,10 +47,9 @@ class DoctorController (
         }
 
         val specialization = jsonNode["specialization"]?.textValue() ?: throw InvalidInputException("Invalid JSON format: 'specialization' is missing")
-        val salary = jsonNode["salary"]?.doubleValue() ?: throw InvalidInputException("Invalid JSON format: 'salary' is missing")
 
         // Check for extra properties in the main object
-        val validFieldNames = setOf("user", "specialization", "salary")
+        val validFieldNames = setOf("user", "specialization")
         val mainFieldNames = jsonNode.fieldNames().asSequence().toSet()
         if (!validFieldNames.containsAll(mainFieldNames)) {
             val extraFields = mainFieldNames - validFieldNames
@@ -69,8 +68,7 @@ class DoctorController (
                 }
 
             },age ),
-            specialization,
-            salary
+            specialization
         )
     }
 
@@ -90,7 +88,7 @@ class DoctorController (
             ResponseEntity.badRequest().body(CustomJsonFormatResponse(
                 "${HttpStatus.BAD_REQUEST}",
                 e.message ?: "Wrong JSON Format",
-                DoctorDTOPublic(UserDTOPublic("firstname", "lastname" , "email" ,"password",Gender.MALE,21), "specialization" , 1000.0 )
+                DoctorDTOPublic(UserDTOPublic("firstname", "lastname" , "email" ,"password",Gender.MALE,21), "specialization")
             ))
         }
     }
@@ -126,7 +124,7 @@ class DoctorController (
             ResponseEntity.badRequest().body(CustomJsonFormatResponse(
                 "${HttpStatus.BAD_REQUEST}",
                 e.message ?: "Wrong JSON Format",
-                DoctorDTOPublic(UserDTOPublic("firstname", "lastname" , "email" ,"password",Gender.MALE,21), "specialization" , 1000.0 )
+                DoctorDTOPublic(UserDTOPublic("firstname", "lastname" , "email" ,"password",Gender.MALE,21), "specialization" )
             ))
         }
 

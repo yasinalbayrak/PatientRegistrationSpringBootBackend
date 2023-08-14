@@ -1,5 +1,6 @@
 package com.internshipproject.patientregistration.entity.user.types
 
+import com.internshipproject.patientregistration.entity.hospital.Hospital
 import com.internshipproject.patientregistration.entity.user.Gender
 import com.internshipproject.patientregistration.entity.user.Role
 import com.internshipproject.patientregistration.entity.user.User
@@ -11,7 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 @PrimaryKeyJoinColumn(name = "id") // Replace "doctor_id" with the appropriate column name
 @DiscriminatorValue("doctor") // The discriminator value to identify this subclass
 data class Doctor(
-    var salary : Double = 10000.0,
+
     var specialization: String = "",
 
     @ManyToMany
@@ -19,9 +20,10 @@ data class Doctor(
         joinColumns = [JoinColumn(name = "doctor_id")],
         inverseJoinColumns = [JoinColumn(name = "patient_id")]
     )
-    private val patients:MutableSet<Patient> =  mutableSetOf()
+    private val patients:MutableSet<Patient> =  mutableSetOf(),
 
-
+    @ManyToMany(mappedBy = "doctors")
+    private val hospitals: MutableSet<Hospital> = mutableSetOf()
 ) : User() {
 
     companion object {
@@ -36,7 +38,7 @@ data class Doctor(
         private var age: Int = 0,
         private var roles: Set<Role> = emptySet(),
         private var specialization: String = "",
-        private var salary : Double = 10000.0,
+
     ) {
 
         fun firstName(firstName: String) = apply { this.firstName = firstName }
@@ -47,12 +49,12 @@ data class Doctor(
         fun age(age: Int) = apply { this.age = age }
         fun roles(roles: Set<Role>) = apply { this.roles = roles }
         fun specialization(specialization: String) = apply { this.specialization = specialization }
-        fun salary(salary: Double) = apply { this.salary = salary }
+
 
         fun build() : Doctor {
             val newDoctor = Doctor(
                 specialization = specialization,
-                salary = salary
+
             )
             newDoctor.firstName = firstName
             newDoctor.lastName = lastName

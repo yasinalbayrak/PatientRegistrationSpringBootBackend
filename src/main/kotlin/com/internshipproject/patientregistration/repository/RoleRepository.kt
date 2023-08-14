@@ -1,5 +1,6 @@
-package com.internshipproject.patientregistration.entity.user
+package com.internshipproject.patientregistration.repository
 
+import com.internshipproject.patientregistration.entity.user.Role
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.Optional
 

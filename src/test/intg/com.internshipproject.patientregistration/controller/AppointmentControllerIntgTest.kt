@@ -1,22 +1,14 @@
 package com.internshipproject.patientregistration.controller
 
 import com.internshipproject.patientregistration.dto._internal.AppointmentDTO
-import com.internshipproject.patientregistration.dto._internal.DoctorDTO
-import com.internshipproject.patientregistration.dto._internal.PatientDTO
 import com.internshipproject.patientregistration.dto._public.AppointmentDTOPublic
-import com.internshipproject.patientregistration.dto._public.DoctorDTOPublic
-import com.internshipproject.patientregistration.dto._public.PatientDTOPublic
-import com.internshipproject.patientregistration.dto._public.UserDTOPublic
 import com.internshipproject.patientregistration.entity.appointment.Appointment
-import com.internshipproject.patientregistration.entity.appointment.AppointmentRepository
-import com.internshipproject.patientregistration.entity.user.Gender
+import com.internshipproject.patientregistration.repository.AppointmentRepository
 import com.internshipproject.patientregistration.entity.user.Role
-import com.internshipproject.patientregistration.entity.user.RoleRepository
-import com.internshipproject.patientregistration.entity.user.UserRepository
-import com.internshipproject.patientregistration.entity.user.types.Doctor
-import com.internshipproject.patientregistration.entity.user.types.DoctorRepository
-import com.internshipproject.patientregistration.entity.user.types.Patient
-import com.internshipproject.patientregistration.entity.user.types.PatientRepository
+import com.internshipproject.patientregistration.repository.RoleRepository
+import com.internshipproject.patientregistration.repository.UserRepository
+import com.internshipproject.patientregistration.repository.DoctorRepository
+import com.internshipproject.patientregistration.repository.PatientRepository
 import com.internshipproject.patientregistration.util.doctorEntityList
 import com.internshipproject.patientregistration.util.patientEntity
 import org.junit.jupiter.api.Assertions
@@ -28,7 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.testcontainers.junit.jupiter.Testcontainers
-import java.time.Duration
 import java.time.LocalDateTime
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

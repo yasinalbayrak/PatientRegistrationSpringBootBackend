@@ -1,18 +1,16 @@
 package com.internshipproject.patientregistration.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.internshipproject.patientregistration.dto._internal.DoctorDTO
 import com.internshipproject.patientregistration.dto._internal.PatientDTO
 import com.internshipproject.patientregistration.dto._internal.UserDTO
 import com.internshipproject.patientregistration.exception.InvalidInputException
 import com.internshipproject.patientregistration.exception.NoUserFoundException
 import com.internshipproject.patientregistration.exception.YourCustomEmailAlreadyExistsException
-import com.internshipproject.patientregistration.entity.user.UserRepository
+import com.internshipproject.patientregistration.repository.UserRepository
 import com.internshipproject.patientregistration.entity.user.types.Doctor
-import com.internshipproject.patientregistration.entity.user.types.DoctorRepository
+import com.internshipproject.patientregistration.repository.DoctorRepository
 import com.internshipproject.patientregistration.entity.user.types.Patient
-import com.internshipproject.patientregistration.entity.user.types.PatientRepository
-import org.springframework.http.HttpHeaders
+import com.internshipproject.patientregistration.repository.PatientRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -39,7 +37,6 @@ class UserService (
             val role = roleService.addRole("Doctor")
             Doctor.builder()
                 .specialization(it.specialization)
-                .salary(it.salary)
                 .firstName(it.user.firstname)
                 .lastName(it.user.lastname)
                 .email(it.user.email)
@@ -55,7 +52,7 @@ class UserService (
         var result = doctorEntity.let {
             DoctorDTO(
                 user = UserDTO(it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Doctor"),
-                salary = it.salary,
+
                 specialization = it.specialization
             )
         }
@@ -70,7 +67,7 @@ class UserService (
                     it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Doctor"
                 ),
                 it.specialization,
-                it.salary
+
             )
         }
     }
@@ -86,7 +83,7 @@ class UserService (
                         doctor.id, doctor.firstName, doctor.lastName, doctor.email, doctor.passw,doctor.gender,doctor.age, "Doctor"
                     ),
                     doctor.specialization,
-                    doctor.salary
+
                 )
             }
             else -> throw InvalidInputException("Invalid ID format. ID must be an integer.")
@@ -118,14 +115,16 @@ class UserService (
                     it.firstName = doctorInput.user.firstname
                     it.lastName = doctorInput.user.lastname
                     it.passw=  passwordEncoder.encode(doctorInput.user.passw)
+                    it.age  = doctorInput.user.age
+                    it.gender = doctorInput.user.gender
                     it.email = doctorInput.user.email
-                    it.salary = doctorInput.salary
+
                     it.specialization= doctorInput.specialization
                     doctorRepository.save(it)
                     DoctorDTO(
                         user= UserDTO(it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Doctor"),
                         specialization = it.specialization,
-                        salary = it.salary
+
                     )
                 }
 
@@ -217,7 +216,7 @@ class UserService (
                 val updatedPatient = patient.let {
                     it.firstName = patientInput.firstname
                     it.lastName = patientInput.lastname
-                    it.passw=  passwordEncoder.encode(patientInput.passw)
+                    //it.passw=  passwordEncoder.encode(patientInput.passw)
                     it.email = patientInput.email
                     it.age= patientInput.age
                     it.gender=patientInput.gender

@@ -1,8 +1,8 @@
-package com.internshipproject.patientregistration.entity.auth
+package com.internshipproject.patientregistration.repository
 
+import com.internshipproject.patientregistration.entity.auth.Token
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import java.time.Instant
 import java.util.Optional
 
 interface TokenRepository : JpaRepository<Token,Int>{

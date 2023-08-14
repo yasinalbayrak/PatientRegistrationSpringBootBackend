@@ -1,5 +1,5 @@
 package com.internshipproject.patientregistration.config
-import com.internshipproject.patientregistration.entity.user.UserRepository
+import com.internshipproject.patientregistration.repository.UserRepository
 import lombok.RequiredArgsConstructor
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

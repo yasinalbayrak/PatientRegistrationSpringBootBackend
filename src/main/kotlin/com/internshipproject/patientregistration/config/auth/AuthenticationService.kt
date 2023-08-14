@@ -2,18 +2,16 @@ package com.internshipproject.patientregistration.config.auth
 
 
 import com.internshipproject.patientregistration.entity.auth.Token
-import com.internshipproject.patientregistration.entity.auth.TokenRepository
+import com.internshipproject.patientregistration.repository.TokenRepository
 import com.internshipproject.patientregistration.entity.auth.TokenType
 import com.internshipproject.patientregistration.entity.user.*
 import com.internshipproject.patientregistration.exception.YourCustomEmailAlreadyExistsException
 import com.internshipproject.patientregistration.service.JwtService
-import com.internshipproject.patientregistration.entity.user.types.Doctor
-import com.internshipproject.patientregistration.entity.user.types.DoctorRepository
 import com.internshipproject.patientregistration.entity.user.types.Patient
+import com.internshipproject.patientregistration.repository.UserRepository
 import com.internshipproject.patientregistration.service.RoleService
 import lombok.RequiredArgsConstructor
 import mu.KLogging
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken

@@ -1,7 +1,7 @@
 package com.internshipproject.patientregistration.service
 
 import com.internshipproject.patientregistration.entity.user.Role
-import com.internshipproject.patientregistration.entity.user.RoleRepository
+import com.internshipproject.patientregistration.repository.RoleRepository
 import org.springframework.stereotype.Service
 
 

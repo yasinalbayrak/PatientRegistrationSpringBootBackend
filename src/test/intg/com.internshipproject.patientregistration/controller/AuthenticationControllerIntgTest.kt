@@ -3,16 +3,13 @@ package com.internshipproject.patientregistration.controller
 import com.internshipproject.patientregistration.config.auth.AuthenticationRequest
 import com.internshipproject.patientregistration.config.auth.AuthenticationResponse
 import com.internshipproject.patientregistration.config.auth.RegisterRequest
-import com.internshipproject.patientregistration.dto._public.PatientDTOPublic
 import com.internshipproject.patientregistration.entity.user.Gender
 import com.internshipproject.patientregistration.entity.user.Role
-import com.internshipproject.patientregistration.entity.user.RoleRepository
-import com.internshipproject.patientregistration.entity.user.UserRepository
-import com.internshipproject.patientregistration.entity.user.types.DoctorRepository
+import com.internshipproject.patientregistration.repository.RoleRepository
+import com.internshipproject.patientregistration.repository.UserRepository
+import com.internshipproject.patientregistration.repository.DoctorRepository
 import com.internshipproject.patientregistration.entity.user.types.Patient
-import com.internshipproject.patientregistration.entity.user.types.PatientRepository
-import com.internshipproject.patientregistration.util.doctorEntityList
-import com.internshipproject.patientregistration.util.patientEntity
+import com.internshipproject.patientregistration.repository.PatientRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -22,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.test.web.reactive.server.returnResult
 import org.testcontainers.junit.jupiter.Testcontainers
 
 
