@@ -69,7 +69,7 @@ class UserControllerIntgTest () {
         val doctorDTO = DoctorDTOPublic(
             UserDTOPublic(firstname = "doctor", lastname = "dr", email = "doctor@gmail.com", passw = "1234", gender = Gender.MALE ,age = 30),
             specialization = "cardiology",
-            salary = 1000.0
+
         )
         val savedDoctorDTO = webTestClient
             .post()
@@ -146,7 +146,6 @@ class UserControllerIntgTest () {
             .passw("1234")
             .roles(setOf(role))
             .specialization("cardiology")
-            .salary(10000.0)
             .build()
 
         doctorRepository.save(doctor)
@@ -161,7 +160,7 @@ class UserControllerIntgTest () {
                 passw = "1234"
             ),
             specialization = "cardiology",
-            salary = 10000.0
+
         )
         val doctorDTO = webTestClient
             .put()
@@ -236,7 +235,7 @@ class UserControllerIntgTest () {
             .passw("1234")
             .roles(setOf(role))
             .specialization("cardiology")
-            .salary(10000.0)
+
             .build()
 
         doctorRepository.save(doctor)

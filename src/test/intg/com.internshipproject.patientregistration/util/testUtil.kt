@@ -19,7 +19,7 @@ fun doctorEntityList(role: Role): List<Doctor> = listOf(
         .passw("1234")
         .roles(setOf(role))
         .specialization("cardiology")
-        .salary(10000.0)
+
         .build(),
 
     Doctor.builder()
@@ -31,7 +31,7 @@ fun doctorEntityList(role: Role): List<Doctor> = listOf(
         .passw("1234")
         .roles(setOf(role))
         .specialization("cardiology")
-        .salary(10000.0)
+
         .build(),
 
     Doctor.builder()
@@ -43,7 +43,7 @@ fun doctorEntityList(role: Role): List<Doctor> = listOf(
         .passw("1234")
         .roles(setOf(role))
         .specialization("cardiology")
-        .salary(10000.0)
+
         .build(),
 
     // Add more doctors if needed...

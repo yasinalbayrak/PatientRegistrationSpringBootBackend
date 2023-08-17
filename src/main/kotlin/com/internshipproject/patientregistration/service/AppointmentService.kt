@@ -155,13 +155,13 @@ class AppointmentService (
     }
 
 
-    @Scheduled(cron = "0 0 * * * *") // Run at the beginning of every hour
+    @Scheduled(cron = "0 0 * * * *") // Run at the beginning of every hour check appointments that passed
     fun updateAppointmentStatus() {
         val currentTime = LocalDateTime.now()
         val appointments = appointmentRepository.findAll()
 
         appointments.forEach { appointment ->
-            if (appointment.date?.isBefore(currentTime) == true) {
+            if (appointment.date?.isBefore(currentTime) == true && (appointment.status != AppointmentStatus.CANCELLED) ) {
                 appointment.status = AppointmentStatus.PASSED
                 appointmentRepository.save(appointment)
             }

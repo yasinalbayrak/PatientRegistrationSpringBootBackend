@@ -56,7 +56,7 @@ class AppointmentController(
     }
 
 
-
+    // validation of Appointment Json for proper response to client
     fun validateAppointmentJson(jsonNode: JsonNode): AppointmentDTOPublic {
         if (jsonNode["doctorID"] == null || !jsonNode["doctorID"].isNumber) {
             throw InvalidInputException("Invalid JSON format: 'doctorID' is missing or not a valid numeric value")

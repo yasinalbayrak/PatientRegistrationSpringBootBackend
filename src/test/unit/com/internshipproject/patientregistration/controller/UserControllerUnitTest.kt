@@ -52,13 +52,13 @@ class UserControllerUnitTest {
         val doctorDTOs = DoctorDTOPublic(
             UserDTOPublic(firstname = "doctor", lastname = "dr", email = "doctor@gmail.com", passw = "1234", gender = Gender.MALE, age = 30),
             specialization = "cardiology",
-            salary = 1000.0
+
         )
 
         every { userServiceMock.addDoctor(any()) } returns DoctorDTO(
             UserDTO(1, firstname = "doctor", lastname = "dr", email = "doctor@gmail.com", passw = "1234", gender = Gender.MALE, age = 30),
             specialization = "cardiology",
-            salary = 1000.0
+
         )
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user/doctor")

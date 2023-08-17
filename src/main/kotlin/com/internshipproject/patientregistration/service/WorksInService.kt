@@ -39,7 +39,7 @@ class WorksInService (
         val startDate : LocalDate = convertStringToLocalDate(workInput.startDate) ?: throw InvalidInputException("startDate should not be null.")
         val endDate : LocalDate? = convertStringToLocalDate(workInput.endDate)
 
-        // validate end DAte
+        // validate end Date
         endDate?.takeIf {
             it.isBefore(startDate) || it.isAfter(LocalDate.now())  }
                 ?.let {
