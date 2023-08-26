@@ -1,14 +1,15 @@
 package com.internshipproject.patientregistration.config.auth
 
 
+import com.internshipproject.patientregistration.dto._internal.UserStatus
 import com.internshipproject.patientregistration.entity.auth.Token
-import com.internshipproject.patientregistration.repository.TokenRepository
+import com.internshipproject.patientregistration.repository.jpa.TokenRepository
 import com.internshipproject.patientregistration.entity.auth.TokenType
 import com.internshipproject.patientregistration.entity.user.*
 import com.internshipproject.patientregistration.exception.YourCustomEmailAlreadyExistsException
 import com.internshipproject.patientregistration.service.JwtService
 import com.internshipproject.patientregistration.entity.user.types.Patient
-import com.internshipproject.patientregistration.repository.UserRepository
+import com.internshipproject.patientregistration.repository.jpa.UserRepository
 import com.internshipproject.patientregistration.service.RoleService
 import lombok.RequiredArgsConstructor
 import mu.KLogging
@@ -61,6 +62,7 @@ class AuthenticationService(
             .roles(setOf(patientRole))
             .age(request.age)
             .gender(request.gender)
+            .userStatus(UserStatus.ACTIVE)
             .build()
 
 
@@ -98,6 +100,8 @@ class AuthenticationService(
 
     fun authenticate(request: AuthenticationRequest): AuthenticationResponse {
         val user = repository.findByEmail(request.email).orElseThrow{YourCustomEmailAlreadyExistsException("Wrong or missing credentials",HttpStatus.BAD_REQUEST)}
+        user.userStatus = UserStatus.ACTIVE
+        repository.save(user)
 
         try {
             authenticationManager.authenticate(

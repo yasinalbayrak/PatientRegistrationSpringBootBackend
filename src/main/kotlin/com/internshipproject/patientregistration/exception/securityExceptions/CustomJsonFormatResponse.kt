@@ -1,4 +1,4 @@
-package com.internshipproject.patientregistration.config.securityExceptions
+package com.internshipproject.patientregistration.exception.securityExceptions
 
 import com.internshipproject.patientregistration.dto._public.DoctorDTOPublic
 

@@ -24,7 +24,9 @@ class PatientDTO(
     var age: Int = 0,
 
     @JsonView(Views.Internal::class)
-    var role: String? = null
+    var role: String? = null,
+
+    var userStatus: UserStatus = UserStatus.INACTIVE
 ) {
 
 

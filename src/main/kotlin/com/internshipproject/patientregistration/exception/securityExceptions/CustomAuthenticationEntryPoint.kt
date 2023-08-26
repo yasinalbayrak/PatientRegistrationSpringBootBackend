@@ -1,4 +1,4 @@
-package com.internshipproject.patientregistration.config.securityExceptions
+package com.internshipproject.patientregistration.exception.securityExceptions
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.internshipproject.patientregistration.exception.TokenIsNotValidException
 import com.internshipproject.patientregistration.exception.YourCustomEmailAlreadyExistsException

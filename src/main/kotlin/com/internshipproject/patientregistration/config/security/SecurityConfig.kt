@@ -1,7 +1,7 @@
-package com.internshipproject.patientregistration.config
+package com.internshipproject.patientregistration.config.security
 
-import com.internshipproject.patientregistration.config.securityExceptions.CustomAccessDeniedHandler
-import com.internshipproject.patientregistration.config.securityExceptions.CustomAuthenticationEntryPoint
+import com.internshipproject.patientregistration.exception.securityExceptions.CustomAccessDeniedHandler
+import com.internshipproject.patientregistration.exception.securityExceptions.CustomAuthenticationEntryPoint
 import com.internshipproject.patientregistration.service.LogoutService
 import lombok.RequiredArgsConstructor
 import mu.KLogging
@@ -13,9 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.security.web.authentication.logout.LogoutHandler
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
@@ -81,7 +79,7 @@ class SecurityConfig {
     private fun corsConfigurationSource(): UrlBasedCorsConfigurationSource {
         val source = UrlBasedCorsConfigurationSource()
         val config = CorsConfiguration()
-        config.addAllowedOrigin("http://localhost:3000") // Change this to your frontend app's origin
+        config.addAllowedOrigin("http://localhost:3000")
         config.addAllowedOrigin("http://192.168.56.1:3000")
         config.addAllowedOriginPattern("*")
         config.addAllowedMethod("*")

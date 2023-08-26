@@ -1,4 +1,4 @@
-package com.internshipproject.patientregistration.repository
+package com.internshipproject.patientregistration.repository.jpa
 
 import com.internshipproject.patientregistration.entity.user.User
 import org.springframework.data.jpa.repository.JpaRepository
@@ -8,4 +8,6 @@ interface UserRepository : JpaRepository<User,Int> {
 
     fun findByEmail(email:String):Optional<User>
     fun existsByEmail(email: String): Boolean
+
+
 }

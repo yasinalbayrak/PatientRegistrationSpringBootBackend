@@ -1,6 +1,6 @@
-package com.internshipproject.patientregistration.config
+package com.internshipproject.patientregistration.config.security
 
-import com.internshipproject.patientregistration.repository.TokenRepository
+import com.internshipproject.patientregistration.repository.jpa.TokenRepository
 import com.internshipproject.patientregistration.service.JwtService
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest

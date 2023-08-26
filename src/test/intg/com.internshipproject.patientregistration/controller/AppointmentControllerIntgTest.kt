@@ -3,12 +3,12 @@ package com.internshipproject.patientregistration.controller
 import com.internshipproject.patientregistration.dto._internal.AppointmentDTO
 import com.internshipproject.patientregistration.dto._public.AppointmentDTOPublic
 import com.internshipproject.patientregistration.entity.appointment.Appointment
-import com.internshipproject.patientregistration.repository.AppointmentRepository
+import com.internshipproject.patientregistration.repository.jpa.AppointmentRepository
 import com.internshipproject.patientregistration.entity.user.Role
-import com.internshipproject.patientregistration.repository.RoleRepository
-import com.internshipproject.patientregistration.repository.UserRepository
-import com.internshipproject.patientregistration.repository.DoctorRepository
-import com.internshipproject.patientregistration.repository.PatientRepository
+import com.internshipproject.patientregistration.repository.jpa.RoleRepository
+import com.internshipproject.patientregistration.repository.jpa.UserRepository
+import com.internshipproject.patientregistration.repository.jpa.DoctorRepository
+import com.internshipproject.patientregistration.repository.jpa.PatientRepository
 import com.internshipproject.patientregistration.util.doctorEntityList
 import com.internshipproject.patientregistration.util.patientEntity
 import org.junit.jupiter.api.Assertions

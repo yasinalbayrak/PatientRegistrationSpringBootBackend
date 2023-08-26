@@ -4,6 +4,9 @@ spring:
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
+
+  websocket:
+    max-text-message-buffer-size: 52428800   # Corrected property name
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -13,6 +16,7 @@ spring:
         format-sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-#logging:
-#  level:
-#    org.springframework: DEBUG
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/local

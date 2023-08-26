@@ -1,6 +1,7 @@
-package com.internshipproject.patientregistration.repository
+package com.internshipproject.patientregistration.repository.jpa
 
 import com.internshipproject.patientregistration.entity.appointment.Appointment
+import com.internshipproject.patientregistration.entity.user.types.Doctor
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDateTime
@@ -17,4 +18,7 @@ interface AppointmentRepository : JpaRepository<Appointment,Int> {
 
     @Query("Select a from Appointment a where a.doctor.id = :userId")
     fun findByDoctorId(userId: Int) :Optional<List<Appointment>>
+
+    @Query("Select DISTINCT a.doctor from Appointment a where a.patient.id = :userId")
+    fun findUniqueDoctorsByUserId(userId: Int) :Set<Doctor>
 }

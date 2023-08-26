@@ -2,7 +2,7 @@ package com.internshipproject.patientregistration.controller
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.internshipproject.patientregistration.config.securityExceptions.CustomJsonFormatResponse
+import com.internshipproject.patientregistration.exception.securityExceptions.CustomJsonFormatResponse
 import com.internshipproject.patientregistration.dto._internal.PatientDTO
 import com.internshipproject.patientregistration.dto._public.PatientDTOPublic
 import com.internshipproject.patientregistration.entity.user.Gender

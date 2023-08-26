@@ -1,14 +1,12 @@
 package com.internshipproject.patientregistration.controller
 
-import com.internshipproject.patientregistration.config.JwtAuthenticationFilter
-import com.internshipproject.patientregistration.config.securityExceptions.CustomAccessDeniedHandler
-import com.internshipproject.patientregistration.config.securityExceptions.CustomAuthenticationEntryPoint
-import lombok.RequiredArgsConstructor
+import com.internshipproject.patientregistration.config.security.JwtAuthenticationFilter
+import com.internshipproject.patientregistration.exception.securityExceptions.CustomAccessDeniedHandler
+import com.internshipproject.patientregistration.exception.securityExceptions.CustomAuthenticationEntryPoint
 import mu.KLogging
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity

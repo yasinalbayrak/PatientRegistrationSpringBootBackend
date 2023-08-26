@@ -6,10 +6,10 @@ import com.internshipproject.patientregistration.dto._internal.PatientDTO
 import com.internshipproject.patientregistration.dto._internal.UserDTO
 import com.internshipproject.patientregistration.dto._public.AppointmentDTOPublic
 import com.internshipproject.patientregistration.entity.appointment.Appointment
-import com.internshipproject.patientregistration.repository.AppointmentRepository
+import com.internshipproject.patientregistration.repository.jpa.AppointmentRepository
 import com.internshipproject.patientregistration.entity.appointment.AppointmentStatus
 import com.internshipproject.patientregistration.entity.user.types.Doctor
-import com.internshipproject.patientregistration.repository.DoctorRepository
+import com.internshipproject.patientregistration.repository.jpa.DoctorRepository
 import com.internshipproject.patientregistration.entity.user.types.Patient
 import com.internshipproject.patientregistration.exception.InvalidInputException
 import com.internshipproject.patientregistration.exception.NoUserFoundException
@@ -60,11 +60,11 @@ class AppointmentService (
             AppointmentDTO(
                 id = it.id,
                 doctor = DoctorDTO(
-                    UserDTO(id = it.doctor!!.id, it.doctor!!.firstName,it.doctor!!.lastName,it.doctor!!.email,it.doctor!!.passw, it.doctor!!.gender,it.doctor!!.age,"Doctor"),
+                    UserDTO(id = it.doctor!!.id, it.doctor!!.firstName,it.doctor!!.lastName,it.doctor!!.email,it.doctor!!.passw, it.doctor!!.gender,it.doctor!!.age,"Doctor",userStatus = it.doctor!!.userStatus),
                     it.doctor!!.specialization,
                     ),
 
-                patient = PatientDTO(id = it.patient!!.id, it.patient!!.firstName,it.patient!!.lastName,it.patient!!.email,it.patient!!.passw,it.patient!!.gender,it.patient!!.age,"Patient"),
+                patient = PatientDTO(id = it.patient!!.id, it.patient!!.firstName,it.patient!!.lastName,it.patient!!.email,it.patient!!.passw,it.patient!!.gender,it.patient!!.age,"Patient",userStatus = it.patient!!.userStatus),
                 date = it.date.toString(),
                 status = it.status
             )
@@ -77,10 +77,10 @@ class AppointmentService (
             AppointmentDTO(
                 id= it.id,
                 doctor = DoctorDTO(
-                    UserDTO(id = it.doctor!!.id, it.doctor!!.firstName,it.doctor!!.lastName,it.doctor!!.email,it.doctor!!.passw,it.doctor!!.gender,it.doctor!!.age,"Doctor"),
+                    UserDTO(id = it.doctor!!.id, it.doctor!!.firstName,it.doctor!!.lastName,it.doctor!!.email,it.doctor!!.passw,it.doctor!!.gender,it.doctor!!.age,"Doctor",userStatus = it.doctor!!.userStatus),
                     it.doctor!!.specialization,
                     ),
-                patient = PatientDTO(id = it.patient!!.id, it.patient!!.firstName,it.patient!!.lastName,it.patient!!.email,it.patient!!.passw,it.patient!!.gender,it.patient!!.age,"Patient"),
+                patient = PatientDTO(id = it.patient!!.id, it.patient!!.firstName,it.patient!!.lastName,it.patient!!.email,it.patient!!.passw,it.patient!!.gender,it.patient!!.age,"Patient", userStatus = it.patient!!.userStatus),
                 date = it.date.toString(),
                 status = it.status
             )
@@ -96,10 +96,11 @@ class AppointmentService (
                 return AppointmentDTO(
                     id= appointment.id,
                     doctor = DoctorDTO(
-                        UserDTO(id = appointment.doctor!!.id, appointment.doctor!!.firstName,appointment.doctor!!.lastName,appointment.doctor!!.email,appointment.doctor!!.passw,appointment.doctor!!.gender,appointment.doctor!!.age,"Doctor"),
+                        UserDTO(id = appointment.doctor!!.id, appointment.doctor!!.firstName,appointment.doctor!!.lastName,appointment.doctor!!.email,appointment.doctor!!.passw,appointment.doctor!!.gender,appointment.doctor!!.age,"Doctor",userStatus = appointment.doctor!!.userStatus),
                         appointment.doctor!!.specialization,
+
                        ),
-                    patient = PatientDTO(id = appointment.patient!!.id, appointment.patient!!.firstName,appointment.patient!!.lastName,appointment.patient!!.email,appointment.patient!!.passw,appointment.patient!!.gender,appointment.patient!!.age,"Patient"),
+                    patient = PatientDTO(id = appointment.patient!!.id, appointment.patient!!.firstName,appointment.patient!!.lastName,appointment.patient!!.email,appointment.patient!!.passw,appointment.patient!!.gender,appointment.patient!!.age,"Patient",userStatus = appointment.patient!!.userStatus),
                     date = appointment.date.toString(),
                     status = appointment.status
                 )
@@ -138,10 +139,10 @@ class AppointmentService (
                     AppointmentDTO(
                         id= appointment.id,
                         doctor = DoctorDTO(
-                            UserDTO(id = appointment.doctor!!.id, appointment.doctor!!.firstName,appointment.doctor!!.lastName,appointment.doctor!!.email,appointment.doctor!!.passw,appointment.doctor!!.gender,appointment.doctor!!.age,"Doctor"),
+                            UserDTO(id = appointment.doctor!!.id, appointment.doctor!!.firstName,appointment.doctor!!.lastName,appointment.doctor!!.email,appointment.doctor!!.passw,appointment.doctor!!.gender,appointment.doctor!!.age,"Doctor", userStatus = appointment.doctor!!.userStatus),
                             appointment.doctor!!.specialization,
                             ),
-                        patient = PatientDTO(id = appointment.patient!!.id, appointment.patient!!.firstName,appointment.patient!!.lastName,appointment.patient!!.email,appointment.patient!!.passw,appointment.patient!!.gender,appointment.patient!!.age,"Patient"),
+                        patient = PatientDTO(id = appointment.patient!!.id, appointment.patient!!.firstName,appointment.patient!!.lastName,appointment.patient!!.email,appointment.patient!!.passw,appointment.patient!!.gender,appointment.patient!!.age,"Patient", userStatus = appointment.patient!!.userStatus),
                         date = appointment.date.toString()
                     )
 
@@ -181,7 +182,7 @@ class AppointmentService (
                 val apponitmentDTO = AppointmentDTO(
                     id= appointment.id,
                     doctor = DoctorDTO(
-                        UserDTO(id = appointment.doctor!!.id, appointment.doctor!!.firstName,appointment.doctor!!.lastName,appointment.doctor!!.email,appointment.doctor!!.passw,appointment.doctor!!.gender,appointment.doctor!!.age,"Doctor"),
+                        UserDTO(id = appointment.doctor!!.id, appointment.doctor!!.firstName,appointment.doctor!!.lastName,appointment.doctor!!.email,appointment.doctor!!.passw,appointment.doctor!!.gender,appointment.doctor!!.age,"Doctor", userStatus = appointment.doctor!!.userStatus),
                         appointment.doctor!!.specialization,
                        ),
                     patient = PatientDTO(id = appointment.patient!!.id, appointment.patient!!.firstName,appointment.patient!!.lastName,appointment.patient!!.email,appointment.patient!!.passw,appointment.patient!!.gender,appointment.patient!!.age,"Patient"),
@@ -203,7 +204,7 @@ class AppointmentService (
                 return appointments.map {   AppointmentDTO(
                     id= it.id,
                     doctor = DoctorDTO(
-                        UserDTO(id = it.doctor!!.id, it.doctor!!.firstName,it.doctor!!.lastName,it.doctor!!.email,it.doctor!!.passw,it.doctor!!.gender,it.doctor!!.age,"Doctor"),
+                        UserDTO(id = it.doctor!!.id, it.doctor!!.firstName,it.doctor!!.lastName,it.doctor!!.email,it.doctor!!.passw,it.doctor!!.gender,it.doctor!!.age,"Doctor", userStatus = it.doctor!!.userStatus),
                         it.doctor!!.specialization,
                        ),
                     patient = PatientDTO(id = it.patient!!.id, it.patient!!.firstName,it.patient!!.lastName,it.patient!!.email,it.patient!!.passw,it.patient!!.gender,it.patient!!.age,"Patient"),
@@ -230,6 +231,20 @@ class AppointmentService (
                     patient = PatientDTO(id = it.patient!!.id, it.patient!!.firstName,it.patient!!.lastName,it.patient!!.email,it.patient!!.passw,it.patient!!.gender,it.patient!!.age,"Patient"),
                     date = it.date.toString(),
                     status = it.status
+                )}
+            }
+            else -> throw InvalidInputException("Invalid ID format. ID must be an integer.")
+        }
+    }
+
+    fun getUniqueDoctorsByUserId(id: Any): Collection<DoctorDTO> {
+        when (val idInt = id.toString().toIntOrNull()) {
+            is Int -> {
+                val uniqueDoctors = appointmentRepository.findUniqueDoctorsByUserId(idInt)
+
+                return uniqueDoctors.map {   DoctorDTO(
+                        UserDTO(id = it.id, it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Doctor", userStatus = it.userStatus),
+                        it.specialization,
                 )}
             }
             else -> throw InvalidInputException("Invalid ID format. ID must be an integer.")

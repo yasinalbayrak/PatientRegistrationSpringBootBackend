@@ -6,7 +6,7 @@ import com.internshipproject.patientregistration.entity.hospital.Hospital
 import com.internshipproject.patientregistration.entity.user.types.Doctor
 import com.internshipproject.patientregistration.entity.worksIn.WorksIn
 import com.internshipproject.patientregistration.exception.InvalidInputException
-import com.internshipproject.patientregistration.repository.WorksInRepository
+import com.internshipproject.patientregistration.repository.jpa.WorksInRepository
 import com.internshipproject.patientregistration.exception.NoUserFoundException
 import com.internshipproject.patientregistration.exception.YourCustomEmailAlreadyExistsException
 import org.springframework.http.HttpStatus
@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Date
 
 
 @Service

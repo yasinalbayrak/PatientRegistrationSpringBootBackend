@@ -5,11 +5,11 @@ import com.internshipproject.patientregistration.config.auth.AuthenticationRespo
 import com.internshipproject.patientregistration.config.auth.RegisterRequest
 import com.internshipproject.patientregistration.entity.user.Gender
 import com.internshipproject.patientregistration.entity.user.Role
-import com.internshipproject.patientregistration.repository.RoleRepository
-import com.internshipproject.patientregistration.repository.UserRepository
-import com.internshipproject.patientregistration.repository.DoctorRepository
+import com.internshipproject.patientregistration.repository.jpa.RoleRepository
+import com.internshipproject.patientregistration.repository.jpa.UserRepository
+import com.internshipproject.patientregistration.repository.jpa.DoctorRepository
 import com.internshipproject.patientregistration.entity.user.types.Patient
-import com.internshipproject.patientregistration.repository.PatientRepository
+import com.internshipproject.patientregistration.repository.jpa.PatientRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

@@ -1,5 +1,6 @@
 package com.internshipproject.patientregistration.entity.user
 
+import com.internshipproject.patientregistration.dto._internal.UserStatus
 import com.internshipproject.patientregistration.entity.auth.Token
 import jakarta.persistence.*
 
@@ -26,6 +27,9 @@ abstract class User(
     open var age:Int = 0,
 
     open var passw: String = "",
+
+    @Enumerated(EnumType.STRING)
+    open var userStatus: UserStatus = UserStatus.INACTIVE,
 
     @OneToMany(mappedBy = "user")
     open val tokens: List<Token> = emptyList(),

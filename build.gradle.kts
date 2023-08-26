@@ -34,6 +34,10 @@ dependencies {
 	implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
 	implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
 	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation ("org.springframework.boot:spring-boot-starter-websocket")
+
+
+	implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
 	//implementation("org.flywaydb:flyway-core")
 
     runtimeOnly("org.postgresql:postgresql")

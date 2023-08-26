@@ -1,4 +1,4 @@
-package com.internshipproject.patientregistration.config.securityExceptions
+package com.internshipproject.patientregistration.exception.securityExceptions
 
 data class CustomErrorResponse(
     val error: String,

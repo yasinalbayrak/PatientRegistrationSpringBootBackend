@@ -2,8 +2,9 @@ package com.internshipproject.patientregistration.controller
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.internshipproject.patientregistration.config.securityExceptions.CustomJsonFormatResponse
+import com.internshipproject.patientregistration.exception.securityExceptions.CustomJsonFormatResponse
 import com.internshipproject.patientregistration.dto._internal.AppointmentDTO
+import com.internshipproject.patientregistration.dto._internal.DoctorDTO
 import com.internshipproject.patientregistration.dto._internal.PatientDTO
 import com.internshipproject.patientregistration.dto._public.AppointmentDTOPublic
 import com.internshipproject.patientregistration.dto._public.PatientDTOPublic
@@ -115,6 +116,11 @@ class AppointmentController(
     @GetMapping("/user/{id}")
     fun getAllAppointmentsByUserId(@PathVariable id: Any) : Collection<AppointmentDTO> {
         return appointmentService.getAllAppointmentsByUserId(id)
+    }
+
+    @GetMapping("/uniqueDoctors/{id}")
+    fun getUniqueDoctorsByUserId(@PathVariable id: Any) : Collection<DoctorDTO> {
+        return appointmentService.getUniqueDoctorsByUserId(id)
     }
     @GetMapping("/doctor/{id}")
     fun getAllAppointmentsByDoctorId(@PathVariable id: Any) : Collection<AppointmentDTO> {

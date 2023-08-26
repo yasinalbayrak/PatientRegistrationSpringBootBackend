@@ -2,7 +2,7 @@ package com.internshipproject.patientregistration.service
 
 import com.internshipproject.patientregistration.dto._internal.HospitalDTO
 import com.internshipproject.patientregistration.entity.hospital.Hospital
-import com.internshipproject.patientregistration.repository.HospitalRepository
+import com.internshipproject.patientregistration.repository.jpa.HospitalRepository
 import com.internshipproject.patientregistration.exception.InvalidInputException
 import com.internshipproject.patientregistration.exception.NoUserFoundException
 import com.internshipproject.patientregistration.exception.YourCustomEmailAlreadyExistsException

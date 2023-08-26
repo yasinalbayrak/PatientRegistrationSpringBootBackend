@@ -1,4 +1,5 @@
 package com.internshipproject.patientregistration.entity.user.types
+import com.internshipproject.patientregistration.dto._internal.UserStatus
 import com.internshipproject.patientregistration.entity.user.Gender
 import com.internshipproject.patientregistration.entity.user.Role
 import com.internshipproject.patientregistration.entity.user.User
@@ -25,6 +26,7 @@ class Patient(
         private var passw: String = "",
         private var gender: Gender = Gender.MALE,
         private var age: Int = 0,
+        private var userStatus: UserStatus = UserStatus.INACTIVE,
         private var roles: Set<Role> = emptySet(),
 
         ) {
@@ -36,6 +38,7 @@ class Patient(
         fun roles(roles: Set<Role>) = apply { this.roles = roles }
         fun gender(gender: Gender) = apply { this.gender = gender }
         fun age(age: Int) = apply { this.age = age }
+        fun userStatus(userStatus: UserStatus) = apply { this.userStatus = userStatus }
 
         fun build() : Patient {
             val newPatient = Patient()
@@ -46,6 +49,7 @@ class Patient(
             newPatient.roles = roles
             newPatient.age= age
             newPatient.gender = gender
+            newPatient.userStatus = userStatus
             return newPatient
         }
     }

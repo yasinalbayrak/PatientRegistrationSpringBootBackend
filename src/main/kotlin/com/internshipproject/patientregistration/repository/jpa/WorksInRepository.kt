@@ -1,4 +1,4 @@
-package com.internshipproject.patientregistration.repository
+package com.internshipproject.patientregistration.repository.jpa
 
 import com.internshipproject.patientregistration.entity.appointment.Appointment
 import com.internshipproject.patientregistration.entity.worksIn.WorksIn

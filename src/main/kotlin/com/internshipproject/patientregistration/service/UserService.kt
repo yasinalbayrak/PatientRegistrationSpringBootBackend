@@ -1,16 +1,22 @@
 package com.internshipproject.patientregistration.service
 
+import com.internshipproject.patientregistration.dto.MessageModel
+import com.internshipproject.patientregistration.dto.MessageStatus
+import com.internshipproject.patientregistration.dto.ResponseMessageModel
 import com.internshipproject.patientregistration.dto._internal.DoctorDTO
 import com.internshipproject.patientregistration.dto._internal.PatientDTO
 import com.internshipproject.patientregistration.dto._internal.UserDTO
+import com.internshipproject.patientregistration.entity.user.User
 import com.internshipproject.patientregistration.exception.InvalidInputException
 import com.internshipproject.patientregistration.exception.NoUserFoundException
 import com.internshipproject.patientregistration.exception.YourCustomEmailAlreadyExistsException
-import com.internshipproject.patientregistration.repository.UserRepository
+import com.internshipproject.patientregistration.repository.jpa.UserRepository
 import com.internshipproject.patientregistration.entity.user.types.Doctor
-import com.internshipproject.patientregistration.repository.DoctorRepository
+import com.internshipproject.patientregistration.repository.jpa.DoctorRepository
 import com.internshipproject.patientregistration.entity.user.types.Patient
-import com.internshipproject.patientregistration.repository.PatientRepository
+import com.internshipproject.patientregistration.repository.jpa.PatientRepository
+import com.internshipproject.patientregistration.repository.mongo.ChatMessageRepository
+import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -24,9 +30,12 @@ class UserService (
     val doctorRepository: DoctorRepository,
     val patientRepository: PatientRepository,
     val roleService: RoleService,
-    val passwordEncoder: PasswordEncoder
+    val passwordEncoder: PasswordEncoder,
+    val chatMessageRepository: ChatMessageRepository
 ) {
-
+    companion object {
+        private val logger = KotlinLogging.logger {}
+    }
     fun addDoctor(doctorDTO: DoctorDTO): DoctorDTO {
 
         if(userRepository.existsByEmail(doctorDTO.user.email))
@@ -51,7 +60,7 @@ class UserService (
 
         var result = doctorEntity.let {
             DoctorDTO(
-                user = UserDTO(it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Doctor"),
+                user = UserDTO(it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Doctor",userStatus = it.userStatus),
 
                 specialization = it.specialization
             )
@@ -64,7 +73,7 @@ class UserService (
         return doctorRepository.findAll().map {
             DoctorDTO(
                 UserDTO(
-                    it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Doctor"
+                    it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Doctor",userStatus = it.userStatus
                 ),
                 it.specialization,
 
@@ -80,7 +89,7 @@ class UserService (
 
                 return DoctorDTO(
                     UserDTO(
-                        doctor.id, doctor.firstName, doctor.lastName, doctor.email, doctor.passw,doctor.gender,doctor.age, "Doctor"
+                        doctor.id, doctor.firstName, doctor.lastName, doctor.email, doctor.passw,doctor.gender,doctor.age, "Doctor",userStatus = doctor.userStatus
                     ),
                     doctor.specialization,
 
@@ -122,7 +131,7 @@ class UserService (
                     it.specialization= doctorInput.specialization
                     doctorRepository.save(it)
                     DoctorDTO(
-                        user= UserDTO(it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Doctor"),
+                        user= UserDTO(it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Doctor",userStatus = it.userStatus),
                         specialization = it.specialization,
 
                     )
@@ -137,7 +146,7 @@ class UserService (
 
     fun getDoctor(doctorId:Int) :Optional<Doctor> = doctorRepository.findById(doctorId)
 
-
+    fun getUser(userID:Int) :Optional<User> = userRepository.findById(userID)
     /*
         ***************  PATIENT ****************
      */
@@ -164,7 +173,7 @@ class UserService (
 
         var result = patientEntity.let {
 
-              PatientDTO(it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Patient")
+              PatientDTO(it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Patient",userStatus = it.userStatus)
 
 
         }
@@ -174,7 +183,7 @@ class UserService (
     fun retrieveAllPatients(): Collection<PatientDTO> {
         return patientRepository.findAll().map {
                 PatientDTO(
-                    it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Patient"
+                    it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Patient",userStatus = it.userStatus
                 )
         }
     }
@@ -186,7 +195,7 @@ class UserService (
                 val patient = patientOptional.orElseThrow { NoUserFoundException("Patient with ID $id not found") }
 
                 return PatientDTO(
-                        patient.id, patient.firstName, patient.lastName, patient.email, patient.passw, patient.gender,patient.age,"Patient"
+                        patient.id, patient.firstName, patient.lastName, patient.email, patient.passw, patient.gender,patient.age,"Patient",userStatus = patient.userStatus
                     )
             }
             else -> throw InvalidInputException("Invalid ID format. ID must be an integer.")
@@ -221,7 +230,7 @@ class UserService (
                     it.age= patientInput.age
                     it.gender=patientInput.gender
                     patientRepository.save(it)
-                    PatientDTO(it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Patient")
+                    PatientDTO(it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,"Patient",userStatus = it.userStatus)
 
 
                 }
@@ -232,6 +241,42 @@ class UserService (
         }
     }
     fun getPatient(id : Int) = patientRepository.findById(id)
+    fun retrieveAllUsers(userId: Int): Collection<UserDTO> {
+
+
+        return userRepository.findAll().map {
+            var lastMessage : ResponseMessageModel? = null
+
+            if (it.id != userId) {
+                val messages = chatMessageRepository.findMessagesBetweenUsers(userId.toString(), it.id.toString())
+
+                if (messages.isNotEmpty()) {
+
+                    val lastMessageInConversation = messages.lastOrNull()
+
+                    if (lastMessageInConversation != null) {
+
+
+                        lastMessage = ResponseMessageModel(
+                            lastMessageInConversation.message ?: "",
+                            lastMessageInConversation.sender ?: "",
+                            lastMessageInConversation.recipient ?: "",
+                            MessageStatus.MESSAGE,
+                            photoData = lastMessageInConversation.photoData
+                        )
+                    }
+                }
+            }
+
+            UserDTO(
+                it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,it.roles.map { role->
+                    role.name
+                }[0],
+                lastMessage,
+                userStatus = it.userStatus
+            )
+        }
+    }
 
 
 }

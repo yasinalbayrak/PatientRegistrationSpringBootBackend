@@ -1,19 +1,17 @@
 package com.internshipproject.patientregistration.util
 
-import com.internshipproject.patientregistration.config.JwtAuthenticationFilter
-import com.internshipproject.patientregistration.config.securityExceptions.CustomAccessDeniedHandler
-import com.internshipproject.patientregistration.config.securityExceptions.CustomAuthenticationEntryPoint
+import com.internshipproject.patientregistration.config.security.JwtAuthenticationFilter
+import com.internshipproject.patientregistration.exception.securityExceptions.CustomAccessDeniedHandler
+import com.internshipproject.patientregistration.exception.securityExceptions.CustomAuthenticationEntryPoint
 import lombok.RequiredArgsConstructor
 import mu.KLogging
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource

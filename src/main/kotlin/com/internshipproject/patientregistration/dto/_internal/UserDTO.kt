@@ -2,6 +2,8 @@ package com.internshipproject.patientregistration.dto._internal
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonView
+import com.internshipproject.patientregistration.dto.MessageModel
+import com.internshipproject.patientregistration.dto.ResponseMessageModel
 import com.internshipproject.patientregistration.entity.user.Gender
 import com.internshipproject.patientregistration.entity.user.Role
 import com.internshipproject.patientregistration.view.Views
@@ -28,7 +30,12 @@ data class UserDTO(
 
 
     @JsonView(Views.Internal::class)
-    var role: String? = null
+    var role: String? = null,
 
+    var lastmessage: ResponseMessageModel? = null,
+
+    var userStatus : UserStatus = UserStatus.INACTIVE,
+
+    var activeInChat: String? = null
 )
 

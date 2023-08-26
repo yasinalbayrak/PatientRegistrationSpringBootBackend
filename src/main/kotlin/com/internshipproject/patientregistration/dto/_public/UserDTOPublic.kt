@@ -14,7 +14,8 @@ class UserDTOPublic(
     var passw: String,
 
     var gender: Gender,
-    var age: Int
+    var age: Int,
+
 ) {
 
 }

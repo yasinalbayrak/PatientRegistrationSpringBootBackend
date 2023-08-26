@@ -1,6 +1,6 @@
 package com.internshipproject.patientregistration.globalExceptionHandler
 
-import com.internshipproject.patientregistration.config.securityExceptions.CustomErrorResponse
+import com.internshipproject.patientregistration.exception.securityExceptions.CustomErrorResponse
 import com.internshipproject.patientregistration.exception.InvalidInputException
 import com.internshipproject.patientregistration.exception.NoUserFoundException
 import com.internshipproject.patientregistration.exception.TokenIsNotValidException

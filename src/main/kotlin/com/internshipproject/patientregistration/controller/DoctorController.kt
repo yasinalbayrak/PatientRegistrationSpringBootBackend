@@ -2,7 +2,7 @@ package com.internshipproject.patientregistration.controller
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.internshipproject.patientregistration.config.securityExceptions.CustomJsonFormatResponse
+import com.internshipproject.patientregistration.exception.securityExceptions.CustomJsonFormatResponse
 import com.internshipproject.patientregistration.dto._internal.DoctorDTO
 import com.internshipproject.patientregistration.dto._public.DoctorDTOPublic
 import com.internshipproject.patientregistration.dto._internal.UserDTO
@@ -85,11 +85,13 @@ class DoctorController (
             ResponseEntity.status(HttpStatus.CREATED).body(doctorDTO)
         } catch (e: InvalidInputException) {
 
-            ResponseEntity.badRequest().body(CustomJsonFormatResponse(
+            ResponseEntity.badRequest().body(
+                CustomJsonFormatResponse(
                 "${HttpStatus.BAD_REQUEST}",
                 e.message ?: "Wrong JSON Format",
                 DoctorDTOPublic(UserDTOPublic("firstname", "lastname" , "email" ,"password",Gender.MALE,21), "specialization")
-            ))
+            )
+            )
         }
     }
 
@@ -121,13 +123,21 @@ class DoctorController (
             ResponseEntity.ok(doctorDTO)
         } catch (e: InvalidInputException) {
 
-            ResponseEntity.badRequest().body(CustomJsonFormatResponse(
+            ResponseEntity.badRequest().body(
+                CustomJsonFormatResponse(
                 "${HttpStatus.BAD_REQUEST}",
                 e.message ?: "Wrong JSON Format",
                 DoctorDTOPublic(UserDTOPublic("firstname", "lastname" , "email" ,"password",Gender.MALE,21), "specialization" )
-            ))
+            )
+            )
         }
 
     }
 
+
+
+    @GetMapping("/getAllUsers/{id}")
+    fun retrieveAllUsers(@PathVariable id: Int): Collection<UserDTO>{
+        return userService.retrieveAllUsers(id)
+    }
 }
