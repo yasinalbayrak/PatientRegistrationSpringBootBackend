@@ -24,7 +24,7 @@ class StartupInitializer(
 
     @PostConstruct
     fun initialize() {
-        val doctorDTO = DoctorDTO(
+        val doctorDTO =  DoctorDTO(
             UserDTO(firstname = "doctor", lastname = "dr", email = "doctor@gmail.com", passw = "1234", gender = Gender.MALE ,age = 30),
             specialization = "cardiology",
 
@@ -49,14 +49,14 @@ class StartupInitializer(
             recipient = "2",
             message = "Hello, how are you?"
         )
-        val sampleChatMessage2 = ChatMessage(
+        /*val sampleChatMessage2 = ChatMessage(
             sender = "2",
             recipient = "1",
             message = "Fine, you?"
-        )
+        )*/
         chatMessageRepository.deleteAll()
         chatMessageRepository.save(sampleChatMessage)
-        chatMessageRepository.save(sampleChatMessage2)
+        //chatMessageRepository.save(sampleChatMessage2)
 
     }
 }

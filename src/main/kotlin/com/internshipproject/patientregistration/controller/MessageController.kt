@@ -17,9 +17,12 @@ class MessageController(private val chatMessageRepository: ChatMessageRepository
         val messages = chatMessageRepository.findMessagesBetweenUsers(senderId,receiverId)
 
         return messages.map {
-            ResponseMessageModel(it.message,it.sender,it.recipient, readStatus = it.readStatus,  photoData = it.photoData)
+            ResponseMessageModel(it.message,it.sender,it.recipient, readStatus = it.readStatus,  photoData = it.photoData,timestamp= it.timestamp)
         }
     }
+
+
+
 
 
 

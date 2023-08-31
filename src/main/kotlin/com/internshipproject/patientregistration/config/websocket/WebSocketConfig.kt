@@ -30,7 +30,7 @@ class WebSocketConfig : WebSocketMessageBrokerConfigurer {
     }
     override fun configureMessageBroker(config: MessageBrokerRegistry) {
         config.setApplicationDestinationPrefixes("/app")
-        config.enableSimpleBroker("/chatroom","/user")
+        config.enableSimpleBroker("/chatroom","/chat-activity","/user")
         config.setUserDestinationPrefix("/user")
 
     }

@@ -11,6 +11,7 @@ data class ResponseMessageModel(
     val readStatus: ReadStatus = ReadStatus.UNSEEN,
     var user: UserDTO? = null,
     var photoData: ByteArray? = null,
+    var timestamp: Long =  System.currentTimeMillis()
 
 ) {
 }

@@ -9,6 +9,7 @@ data class MessageModel(
      val status: MessageStatus = MessageStatus.MESSAGE,
      val readStatus: ReadStatus = ReadStatus.UNSEEN,
      var user: UserDTO? = null,
-     var photoData: String? = null
+     var photoData: String? = null,
+     var timestamp: Long =  System.currentTimeMillis()
 ) {
 }

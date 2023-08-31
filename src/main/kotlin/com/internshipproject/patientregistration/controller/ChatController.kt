@@ -29,7 +29,7 @@ class ChatController(
     private val chatMessageRepository: ChatMessageRepository,
     private val userService: UserService
 ) {
-    companion object
+
     @MessageMapping("/message")
     @SendTo("/chatroom/public")
     fun sendPublicMessage(
@@ -63,7 +63,9 @@ class ChatController(
                 sender = message.senderName,
                 recipient = message.receiverName,
                 message = message.message,
-                photoData = photoData
+                photoData = photoData,
+                readStatus = message.readStatus,
+                timestamp= message.timestamp
             )
 
             chatMessageRepository.save(messageEntity)
@@ -90,7 +92,7 @@ class ChatController(
             chatMessageRepository.saveAll(allMessages)
 
         } else if ( message.status == MessageStatus.LEAVE){
-
+            
         }
 
         messagingTemplate.convertAndSendToUser(message.receiverName, "/private", message)
@@ -98,15 +100,6 @@ class ChatController(
         return message
     }
 
-    @MessageMapping("/private-chat-activity")
-    fun enterPrivateChat(
-        @Payload message: MessageModel,
-        headerAccessor: SimpMessageHeaderAccessor
-    ): MessageModel {
 
-
-        messagingTemplate.convertAndSendToUser(message.receiverName, "/private", message)
-        return message
-    }
 
 }

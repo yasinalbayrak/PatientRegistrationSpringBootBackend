@@ -14,6 +14,7 @@ import com.internshipproject.patientregistration.entity.user.types.Patient
 import com.internshipproject.patientregistration.exception.InvalidInputException
 import com.internshipproject.patientregistration.exception.NoUserFoundException
 import com.internshipproject.patientregistration.exception.YourCustomEmailAlreadyExistsException
+import com.internshipproject.patientregistration.util.appointment.AppointmentUtils
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.scheduling.annotation.Scheduled
@@ -26,16 +27,15 @@ import java.time.format.DateTimeFormatter
 class AppointmentService (
     val appointmentRepository: AppointmentRepository,
     val userService: UserService,
-    val doctorRepository: DoctorRepository
+    val doctorRepository: DoctorRepository,
+    val appointmentUtils: AppointmentUtils
 ) {
-    fun convertStringToLocalDateTime(dateTimeString: String): LocalDateTime {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-        return LocalDateTime.parse(dateTimeString, formatter)
-    }
+
 
     fun addAppointment(appointmentInput: AppointmentDTOPublic): AppointmentDTO {
 
-        if(appointmentRepository.existsAppointmentWithDoctorPatientAndDate(appointmentInput.doctorID!!,convertStringToLocalDateTime(appointmentInput.date!!)))
+        val date:LocalDateTime = appointmentUtils.convertStringToLocalDateTime(appointmentInput.date!!)
+        if(appointmentRepository.existsAppointmentWithDoctorPatientAndDate(appointmentInput.doctorID!!,date))
             throw YourCustomEmailAlreadyExistsException("This appointment date is already booked by someone else.", HttpStatus.CONFLICT)
 
 
@@ -46,15 +46,15 @@ class AppointmentService (
         val patient : Patient = optionalPatient.orElseThrow { NoUserFoundException("Patient with ID ${appointmentInput.patientID} not found") }
 
 
-        val appointmentEntity : Appointment = appointmentInput.let {
+        var appointmentEntity : Appointment = appointmentInput.let {
             Appointment.builder()
                 .doctor(doctor)
                 .patient(patient)
-                .date(convertStringToLocalDateTime(it.date!!))
+                .date(appointmentUtils.convertStringToLocalDateTime(it.date!!))
                 .build()
         }
 
-        appointmentRepository.save(appointmentEntity)
+        appointmentEntity = appointmentRepository.save(appointmentEntity)
 
         var result = appointmentEntity.let {
             AppointmentDTO(
@@ -132,8 +132,8 @@ class AppointmentService (
                 val updatedAppointment = appointment.let {
                     it.doctor = userService.getDoctor(appointmentInput.doctorID!!).orElseThrow{NoUserFoundException("Doctor with ID ${appointmentInput.doctorID!!} not found")}
                     it.patient = userService.getPatient(appointmentInput.patientID!!).orElseThrow{NoUserFoundException("Patient with ID ${appointmentInput.patientID!!} not found")}
-                    it.date =   convertStringToLocalDateTime(appointmentInput.date!!)
-                    if(appointmentRepository.existsAppointmentWithDoctorPatientAndDate(appointmentInput.doctorID!!,convertStringToLocalDateTime(appointmentInput.date!!)))
+                    it.date =   appointmentUtils.convertStringToLocalDateTime(appointmentInput.date!!)
+                    if(appointmentRepository.existsAppointmentWithDoctorPatientAndDate(appointmentInput.doctorID!!,appointmentUtils.convertStringToLocalDateTime(appointmentInput.date!!)))
                         throw YourCustomEmailAlreadyExistsException("This appointment date is already booked by someone else.", HttpStatus.CONFLICT)
                     appointmentRepository.save(it)
                     AppointmentDTO(

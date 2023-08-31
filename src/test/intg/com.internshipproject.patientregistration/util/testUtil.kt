@@ -19,7 +19,6 @@ fun doctorEntityList(role: Role): List<Doctor> = listOf(
         .passw("1234")
         .roles(setOf(role))
         .specialization("cardiology")
-
         .build(),
 
     Doctor.builder()
@@ -60,5 +59,8 @@ fun patientEntity(role:Role) = Patient
     .passw("1234")
     .roles(setOf(role))
     .build()
+
+
+fun roleEntity(role: String) = Role.builder().name(role).build()
 
 

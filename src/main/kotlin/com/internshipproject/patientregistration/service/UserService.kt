@@ -2,6 +2,7 @@ package com.internshipproject.patientregistration.service
 
 import com.internshipproject.patientregistration.dto.MessageModel
 import com.internshipproject.patientregistration.dto.MessageStatus
+import com.internshipproject.patientregistration.dto.ReadStatus
 import com.internshipproject.patientregistration.dto.ResponseMessageModel
 import com.internshipproject.patientregistration.dto._internal.DoctorDTO
 import com.internshipproject.patientregistration.dto._internal.PatientDTO
@@ -246,11 +247,23 @@ class UserService (
 
         return userRepository.findAll().map {
             var lastMessage : ResponseMessageModel? = null
-
+            var unseenMessageCount : Long? = null
             if (it.id != userId) {
                 val messages = chatMessageRepository.findMessagesBetweenUsers(userId.toString(), it.id.toString())
 
                 if (messages.isNotEmpty()) {
+                    val unseenMessages: Long = messages.reversed().fold(0) { acc, chatMessage ->
+                        if (chatMessage.readStatus == ReadStatus.UNSEEN && chatMessage.sender != userId.toString()) {
+                            acc + 1
+                        } else if (chatMessage.readStatus == ReadStatus.SEEN) {
+                            return@fold acc
+                        }else{
+                            acc
+                        }
+                    }
+                    unseenMessageCount = unseenMessages
+
+
 
                     val lastMessageInConversation = messages.lastOrNull()
 
@@ -261,18 +274,25 @@ class UserService (
                             lastMessageInConversation.message ?: "",
                             lastMessageInConversation.sender ?: "",
                             lastMessageInConversation.recipient ?: "",
+
                             MessageStatus.MESSAGE,
+                            timestamp = lastMessageInConversation.timestamp,
                             photoData = lastMessageInConversation.photoData
                         )
                     }
+
+
                 }
             }
+
+
 
             UserDTO(
                 it.id,it.firstName,it.lastName,it.email,it.passw,it.gender,it.age,it.roles.map { role->
                     role.name
                 }[0],
                 lastMessage,
+                unseenMessages = unseenMessageCount,
                 userStatus = it.userStatus
             )
         }

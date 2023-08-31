@@ -34,6 +34,8 @@ data class UserDTO(
 
     var lastmessage: ResponseMessageModel? = null,
 
+    var unseenMessages: Long? = 0,
+
     var userStatus : UserStatus = UserStatus.INACTIVE,
 
     var activeInChat: String? = null
